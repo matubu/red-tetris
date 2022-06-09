@@ -1,0 +1,18 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "qwe",
+    "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
+  },
+  "jest": {
+    "verbose": true,
+    "transform" : {}
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongodb": "^4.7.0"
+  },
+  "devDependencies": {
+    "jest": "^28.1.1"
+  }
+}
