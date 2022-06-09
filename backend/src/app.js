@@ -1,5 +1,5 @@
 import express from 'express'
-import { connect } from './connect.js'
+import { connect } from './mongodb'
 
 let app = express()
 let db = await connect()
