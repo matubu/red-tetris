@@ -27,7 +27,6 @@
 			let moved = currentShape.tick(layer)
 			board = currentShape.drawOn(layer)
 
-			console.log('update', moved)
 			if (!moved)
 			{
 				shapes.push(currentShape)
@@ -42,8 +41,11 @@
 </script>
 
 <style>
+	:global(html) {
+		background: #0c0c11;
+	}
 	.container {
-		width: min(100vw, 100vh / 2);
+		width: min(90vw, 90vh / 2);
 		display: flex;
 		flex-direction: column;
 		gap: 5px;
@@ -57,30 +59,33 @@
 		flex: 1;
 		aspect-ratio: 1/1;
 		border-radius: 4px;
+		transition: .2s;
+		background: var(--color);
+		box-shadow: inset 0 0 18px #13122088, 0 0 10px var(--color);
 	}
-	.cell-0 { background: #3f3f3f; }
-	.cell-1 { background: #8fcdee; }
-	.cell-2 { background: #5555ef; }
-	.cell-3 { background: #e58e36; }
-	.cell-4 { background: #ebe648; }
-	.cell-5 { background: #73e852; }
-	.cell-6 { background: #dc60ea; }
-	.cell-7 { background: #ef4a58; }
+	.cell-0 { --color: #3f3f3f; }
+	.cell-1 { --color: #8fcdee; }
+	.cell-2 { --color: #5555ef; }
+	.cell-3 { --color: #e58e36; }
+	.cell-4 { --color: #ebe648; }
+	.cell-5 { --color: #73e852; }
+	.cell-6 { --color: #dc60ea; }
+	.cell-7 { --color: #ef4a58; }
 </style>
 
 <svelte:window
 	on:keydown={e => {
 		console.log(e.key)
+		if (currentShape === undefined) return ;
 		if (e.key == 'ArrowLeft')
-			currentShape.rotateLeft()
-		else if (e.key == 'ArrowRight')
-			currentShape.rotateLeft()
-		else if (e.key == 'a')
 			currentShape.move(getBoard(shapes), -1, 0)
-		else if (e.key == 'd')
+		else if (e.key == 'ArrowRight')
 			currentShape.move(getBoard(shapes), 1, 0)
+		else if (e.key == 'ArrowUp')
+			currentShape.rotateLeft(getBoard(shapes))
 		else if (e.key == 'ArrowDown' || e.key == ' ')
-			currentShape.move(getBoard(shapes), 0, 5);
+			for (let i = 0; i < 5; ++i)
+				currentShape.move(getBoard(shapes), 0, 1)
 		else
 			return ;
 		board = currentShape.drawOn(getBoard(shapes))

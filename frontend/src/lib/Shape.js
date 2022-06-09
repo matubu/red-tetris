@@ -6,25 +6,34 @@ class Shape {
 		this.shape = shape.map(row => [...row])
 	}
 	itersect(board) {
-		if (
-				this.x < 0
-				|| this.x + this.shape.length > 10
-				|| this.y + this.shape.length > 20
-			)
-			return (true)
+		for (let y in this.shape)
+		{
+			for (let x in this.shape[y])
+			{
+				let cell = this.shape[y][x]
+				if (!cell)
+					continue ;
+
+				let rx = this.x + +x
+				let ry = this.y + +y
+				if (
+					rx < 0
+					|| rx >= 10
+					|| ry >= 20
+					|| board?.[ry]?.[rx]
+				)
+					return (true)
+			}
+		}
 		return (false)
 	}
-	rotateLeft() {
-		let shape = this.shape.map(row => [...row])
+	rotateLeft(board) {
+		let old_shape = this.shape.map(row => [...row])
 		for (let y in this.shape)
 			for (let x in this.shape[y])
-				shape[y][x] = this.shape[this.shape.length - 1 - x][y]
-		this.shape = shape
-	}
-	rotateRight() {
-		this.rotateLeft()
-		this.rotateLeft()
-		this.rotateLeft()
+				this.shape[y][x] = old_shape[this.shape.length - 1 - x][y]
+		if (this.itersect(board))
+			this.shape = old_shape
 	}
 	move(board, ox, oy) {
 		this.x += ox

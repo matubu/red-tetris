@@ -40,7 +40,7 @@
 .red-input {
 	height: 3rem;
 	font-family: 'redtetris', sans-serif;
-	font-size: 60px;
+	font-size: 30px;
 	color: #FA2A2A;
 	font-weight: lighter;
 	border-radius: 15px;
