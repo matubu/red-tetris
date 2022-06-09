@@ -1,0 +1,23 @@
+/* @font-face {
+	font-family: 'Pluto';
+	src: url('PlutoRegular.woff') format('woff');
+} */
+@font-face {
+	font-family: 'Pixelised';
+	src: url('Pixelised.TTF');
+}
+
+html {
+	background: black;
+}
+
+.title {
+	text-align: center;
+	color: #E73519;
+	font-family: "Pixelised", sans-serif;
+	font-size: 3rem;
+}
+
+body {
+	margin: 0;
+}
