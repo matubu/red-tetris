@@ -1,7 +1,6 @@
 {
   "type": "module",
   "scripts": {
-	"start": "sh start.sh",
     "backend": "export $(cat .env) && node backend/app.js",
 	"frontend": "echo front",
 	"test": "node --experimental-vm-modules ./node_modules/.bin/jest"
