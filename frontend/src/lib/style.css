@@ -6,9 +6,13 @@
 	font-family: 'Pixelised';
 	src: url('Pixelised.TTF');
 }
+@font-face {
+	font-family: "redtetris";
+	src: url("redtetris.ttf");
+}
 
 html {
-	background: black;
+	background: #f00B;
 }
 
 .title {
