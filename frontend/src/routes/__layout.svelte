@@ -4,7 +4,7 @@
 </script>
 
 <style>
-	.disconectted {
+	.disconnected {
 		position: fixed;
 		width: 100%;
 		bottom: 0;
@@ -16,8 +16,8 @@
 </style>
 
 {#if !$connected}
-<div class="disconectted">
-	disconectted
+<div class="disconnected">
+	DISCONNECTED
 </div>
 {/if}
 <slot />
