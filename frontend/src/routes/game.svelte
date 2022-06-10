@@ -3,7 +3,7 @@
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { TETRIMINOS } from "$lib/Shape.js";
-import Room from "./room.svelte";
+	import Room from "./room.svelte";
 
 	let roomname = ''
 
@@ -59,7 +59,10 @@ import Room from "./room.svelte";
 		}
 		socket.on('connect', initGame)
 		initGame()
-
+		socket.on(`gameInfo:${roomname}`, (board1) => {
+			console.log(board);
+			board = board1;
+		});
 
 		// let interval = setInterval(() => {
 		// 	if (currentShape == undefined)
@@ -197,8 +200,8 @@ import Room from "./room.svelte";
 
 <svelte:window
 	on:keydown={e => {
-		console.log('emit')
-		socket.emit(`event:${e.key}`)
+		console.log('emit key')
+		socket.emit(`event:${roomname}`, e.key);
 
 		// if (currentShape === undefined) return ;
 		// if (e.key == 'ArrowLeft')
