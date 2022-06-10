@@ -18,14 +18,14 @@ class Shape {
 				let ry = this.y + +y
 				if (
 					rx < 0
-					|| rx >= 10
-					|| ry >= 20
+					|| rx >= board[0].length
+					|| ry >= board.length
 					|| board?.[ry]?.[rx]
 				)
-					return (true)
+					return (true);
 			}
 		}
-		return (false)
+		return (false);
 	}
 	rotateLeft(board) {
 		let old_shape = this.shape.map(row => [...row])
@@ -50,6 +50,7 @@ class Shape {
 		return this.move(board, 0, 1)
 	}
 	drawOn(board) {
+		let copyBoard = board.map(row => [...row]);
 		for (let y in this.shape)
 		{
 			for (let x in this.shape[y])
@@ -58,12 +59,12 @@ class Shape {
 				{
 					let py = this.y + +y
 					let px = this.x + +x
-					if (board[py]?.[px] !== undefined)
-						board[py][px] = this.colorid
+					if (copyBoard[py]?.[px] !== undefined)
+						copyBoard[py][px] = this.colorid
 				}
 			}
 		}
-		return (board)
+		return copyBoard;
 	}
 }
 

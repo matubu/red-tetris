@@ -13,7 +13,7 @@
 			.fill()
 			.map(() => new Array(10).fill(0))
 		for (let shape of shapes)
-			shape.drawOn(board)
+			board = shape.drawOn(board)
 		return (board)
 	}
 
