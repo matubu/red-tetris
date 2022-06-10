@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
 		})
 		// Init game for user
 		socket.on(`initgame`, (roomname) => {
-			console.log('test authorized')
+			console.log('test authorized', room.name, roomname)
 			if (roomname !== room.name)
 			{
 				socket.emit(`notauthorized:${roomname}`)

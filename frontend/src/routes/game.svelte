@@ -54,6 +54,7 @@ import Room from "./room.svelte";
 		console.log(`emit game: initgame`)
 
 		const initGame = () => {
+			console.log('initgame', roomname)
 			socket.emit('initgame', roomname)
 		}
 		socket.on('connect', initGame)
