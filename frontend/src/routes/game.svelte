@@ -9,6 +9,8 @@
 	let layer = emptyBoard()
 	let board = emptyBoard()
 
+	let lines = 0;
+
 	function emptyBoard() {
 		let board = new Array(20)
 			.fill()
@@ -38,8 +40,17 @@
 			{
 				layer = currentShape.drawOn(layer)
 				currentShape = undefined
+
+				let filterLayer = layer
+					.filter(row => row.some(cell => cell == 0));
+				while (filterLayer.length != layer.length)
+				{
+					filterLayer.unshift(new Array(10).fill(0))
+					++lines;
+				}
+				layer = filterLayer
 			}
-		}, 1000)
+		}, 250)
 
 		return () => {
 			clearInterval(interval)
@@ -164,7 +175,7 @@
 		LEVEL<br>
 		0<br>
 		LINES<br>
-		0
+		{lines}
 	</aside>
 </main>
 
