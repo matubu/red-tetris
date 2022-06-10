@@ -28,7 +28,7 @@
 			verify={value => {
 				if (!value.trim())
 					return ('Username required')
-				if (!/^[a-z0-9_-]*$/.test(value))
+				if (!/^[a-z0-9_-]*$/i.test(value))
 					return ('Username should only contains [a-z][0-9]_-')
 			}}
 			maxlength="16"
