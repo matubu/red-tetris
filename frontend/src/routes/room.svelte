@@ -1,9 +1,19 @@
 <script>
 	import { goto } from "$app/navigation";
-    import { page } from '$app/stores'
+	import { onMount } from "svelte";
 
 	let roomname = ''
-	$: roomname = $page.url.hash.slice(1)
+	onMount(() => {
+		function gethash() {
+			if (!(roomname = location.hash.slice(1)))
+				goto('/rooms')
+		}
+
+		window.addEventListener('hashchange', gethash);
+		gethash()
+
+		return () => window.removeEventListener('hashchange', gethash);
+	})
 </script>
 
 <main class="main">
