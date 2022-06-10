@@ -139,7 +139,7 @@
 			transform: scale(0);
 		}
 		to {
-			background: #0009;
+			background: #000000c4;
 		}
 	}
 	.gameover {

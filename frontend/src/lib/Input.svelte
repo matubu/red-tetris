@@ -1,6 +1,4 @@
 <script>
-	import { tick } from "svelte";
-
 	export let verify
 	export let placeholder
 	export let maxlength
@@ -37,9 +35,8 @@
 	{/if}
 	<input
 		bind:this={input}
-		on:input={async () => {
-			await tick()
-			error = verify(getValue())
+		on:input={async (e) => {
+			error = verify(e.target.value)
 		}}
 		bind:value={value}
 		class="red-input"
