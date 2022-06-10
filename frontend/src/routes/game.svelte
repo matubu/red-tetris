@@ -118,12 +118,13 @@
 		animation: .3s .5s grow ease-out forwards;
 	}
 	@keyframes fade {
-		0% {
-			opacity: 0;
+		to {
+			opacity: 1;
 		}
 	}
 	.red-button {
-		animation: .6s .8s fade 
+		opacity: 0;
+		animation: .5s .7s fade forwards
 	}
 </style>
 
