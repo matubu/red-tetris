@@ -5,6 +5,12 @@ class Shape {
 		this.colorid = colorid
 		this.shape = shape.map(row => [...row])
 	}
+	clone() {
+		let newShape = new Shape(this.colorid, this.shape);
+		newShape.x = this.x;
+		newShape.y = this.y;
+		return newShape;
+	}
 	intersect(board) {
 		for (let y in this.shape)
 		{

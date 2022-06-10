@@ -18,6 +18,21 @@
 		return (board)
 	}
 
+	function makeShadow(currentShape) {
+		let copy = currentShape.clone()
+		copy.colorid = 8
+		while (copy.tick(layer)) ;
+		return copy;
+	}
+	function draw(currentShape, layer) {
+		let board;
+		let shadow = makeShadow(currentShape);
+		
+		board = shadow.drawOn(layer)
+		board = currentShape.drawOn(board)
+		return board
+	}
+
 	onMount(() => {
 		let interval = setInterval(() => {
 			if (currentShape == undefined)
@@ -32,9 +47,9 @@
 				}
 				currentShape = newShape
 			}
-
+			
 			let moved = currentShape.tick(layer)
-			board = currentShape.drawOn(layer)
+			board = draw(currentShape, layer);
 
 			if (!moved)
 			{
@@ -94,6 +109,7 @@
 	.cell-5 { --color: #73e852; }
 	.cell-6 { --color: #dc60ea; }
 	.cell-7 { --color: #ef4a58; }
+	.cell-8 { --color: #929393ae; }
 
 	@keyframes popin {
 		0% {
@@ -152,7 +168,7 @@
 			currentShape.move(layer, 0, 1)
 		else
 			return ;
-		board = currentShape.drawOn(layer)
+		board = draw(currentShape, layer);
 	}}
 />
 
