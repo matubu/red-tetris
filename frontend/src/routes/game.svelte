@@ -6,18 +6,15 @@
 	let gameover = false
 	let currentShape
 	let i = 0
-	let shapes = []
+	let layer = emptyBoard()
+	let board = emptyBoard()
 
-	function getBoard(shapes) {
+	function emptyBoard() {
 		let board = new Array(20)
 			.fill()
 			.map(() => new Array(10).fill(0))
-		for (let shape of shapes)
-			board = shape.drawOn(board)
 		return (board)
 	}
-
-	let board = getBoard(shapes)
 
 	onMount(() => {
 		let interval = setInterval(() => {
@@ -25,7 +22,7 @@
 			{
 				let newShape = TETRIMINOS[i++ % TETRIMINOS.length]
 					.constructShape()
-				if (newShape.intersect(getBoard(shapes)))
+				if (newShape.intersect(layer))
 				{
 					gameover = true
 					clearInterval(interval)
@@ -34,13 +31,12 @@
 				currentShape = newShape
 			}
 
-			let layer = getBoard(shapes)
 			let moved = currentShape.tick(layer)
 			board = currentShape.drawOn(layer)
 
 			if (!moved)
 			{
-				shapes.push(currentShape)
+				layer = currentShape.drawOn(layer)
 				currentShape = undefined
 			}
 		}, 1000)
@@ -121,26 +117,31 @@
 		opacity: 0;
 		animation: .3s .5s grow ease-out forwards;
 	}
-	/* .red-button {
-		animation .6s .8s fade 
-	} */
+	@keyframes fade {
+		0% {
+			opacity: 0;
+		}
+	}
+	.red-button {
+		animation: .6s .8s fade 
+	}
 </style>
 
 <svelte:window
 	on:keydown={e => {
 		if (currentShape === undefined) return ;
 		if (e.key == 'ArrowLeft')
-			currentShape.move(getBoard(shapes), -1, 0)
+			currentShape.move(layer, -1, 0)
 		else if (e.key == 'ArrowRight')
-			currentShape.move(getBoard(shapes), 1, 0)
+			currentShape.move(layer, 1, 0)
 		else if (e.key == 'ArrowUp')
-			currentShape.rotateLeft(getBoard(shapes))
+			currentShape.rotateLeft(layer)
 		else if (e.key == 'ArrowDown' || e.key == ' ')
 			for (let i = 0; i < 5; ++i)
-				currentShape.move(getBoard(shapes), 0, 1)
+				currentShape.move(layer, 0, 1)
 		else
 			return ;
-		board = currentShape.drawOn(getBoard(shapes))
+		board = currentShape.drawOn(layer)
 	}}
 />
 
