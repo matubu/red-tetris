@@ -90,19 +90,21 @@
 		width: min(90vw, 90vh / 2);
 		display: flex;
 		flex-direction: column;
-		gap: 5px;
+		gap: 4px;
 	}
 	.row {
 		display: flex;
-		gap: 5px;
+		gap: 4px;
 	}
 	.cell {
 		flex: 1;
 		aspect-ratio: 1/1;
-		border-radius: 3px;
+		border-radius: 7%;
 		transition: .1s;
 		background: var(--color);
-		box-shadow: inset 0 0 25px #13122055, 0 0 6px var(--color);
+		--shadow-color: #0d0d1716;
+		--shadow: inset 0 0 0 5px var(--shadow-color), inset -5px -5px var(--shadow-color);
+		box-shadow: var(--shadow), 0 0 6px var(--color);
 	}
 	.cell-0 { --color: #3f3f3f; }
 	.cell-1 { --color: #8fcdee; }
@@ -113,6 +115,10 @@
 	.cell-6 { --color: #dc60ea; }
 	.cell-7 { --color: #ef4a58; }
 	.cell-8 { --color: #929393ae; }
+	.cell-0, .cell-8 {
+		--shadow-color: #0d0d171e;
+		box-shadow: var(--shadow); 
+	}
 
 	@keyframes popin {
 		0% {
