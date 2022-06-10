@@ -1,17 +1,25 @@
 <script>
 	import { goto } from "$app/navigation";
 	import { onMount } from "svelte";
+	import { user, socket } from "$lib/user.js";
+	import {browser} from "$app/env"
 
 	let roomname = ''
 	onMount(() => {
 		function gethash() {
 			if (!(roomname = location.hash.slice(1)))
 				goto('/rooms')
+			if (browser) {
+				socket.emit('joinRoom', {room: roomname,user: $user});
+				socket.on('roomMessage', (arg) => {
+					console.log("on.roomMessage ->", arg);
+				})
+			}
 		}
-
 		window.addEventListener('hashchange', gethash);
 		gethash()
-
+		
+		
 		return () => window.removeEventListener('hashchange', gethash);
 	})
 </script>
