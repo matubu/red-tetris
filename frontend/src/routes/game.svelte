@@ -75,7 +75,7 @@
 		flex: 1;
 		aspect-ratio: 1/1;
 		border-radius: 3px;
-		transition: .2s;
+		transition: .1s;
 		background: var(--color);
 		box-shadow: inset 0 0 25px #13122055, 0 0 6px var(--color);
 	}
@@ -136,8 +136,7 @@
 		else if (e.key == 'ArrowUp')
 			currentShape.rotateLeft(getBoard(shapes))
 		else if (e.key == 'ArrowDown' || e.key == ' ')
-			for (let i = 0; i < 5; ++i)
-				currentShape.move(getBoard(shapes), 0, 1)
+			currentShape.move(getBoard(shapes), 0, 1)
 		else
 			return ;
 		board = currentShape.drawOn(getBoard(shapes))
