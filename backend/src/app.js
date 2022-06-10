@@ -43,7 +43,8 @@ io.on("connection", (socket) => {
 			console.log(key)
 		})
 		// Init game for user
-		socket.on(`initgame`, (roomname) => {
+		socket.removeAllListeners('initgame')
+		socket.on('initgame', (roomname) => {
 			console.log('test authorized', room.name, roomname)
 			if (roomname !== room.name)
 			{
