@@ -1,8 +1,11 @@
 <script>
-	import { user } from "$lib/user";
+	import { user, socket } from "$lib/user";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { TETRIMINOS } from "$lib/Shape.js";
+import Room from "./room.svelte";
+
+	let roomname = ''
 
 	let gameover = false
 	let currentShape
@@ -37,44 +40,63 @@
 	}
 
 	onMount(() => {
-		let interval = setInterval(() => {
-			if (currentShape == undefined)
-			{
-				let newShape = TETRIMINOS[i++ % TETRIMINOS.length]
-					.constructShape()
-				if (newShape.intersect(layer))
-				{
-					gameover = true
-					clearInterval(interval)
-					return ;
-				}
-				currentShape = newShape
-			}
+		if (!(roomname = location.hash.slice(1).toLowerCase()))
+			goto('/rooms')
+
+		socket.on(`gamedata:${roomname}`, (_users) => {
+			users = _users
+			console.log("list", users);
+		})
+		socket.on(`notauthorized:${roomname}`, () => {
+			console.log('notauthorized');
+			goto('/rooms')
+		})
+		console.log(`emit game: initgame`)
+
+		const initGame = () => {
+			socket.emit('initgame', roomname)
+		}
+		socket.on('connect', initGame)
+		initGame()
+
+
+		// let interval = setInterval(() => {
+		// 	if (currentShape == undefined)
+		// 	{
+		// 		let newShape = TETRIMINOS[i++ % TETRIMINOS.length]
+		// 			.constructShape()
+		// 		if (newShape.intersect(layer))
+		// 		{
+		// 			gameover = true
+		// 			clearInterval(interval)
+		// 			return ;
+		// 		}
+		// 		currentShape = newShape
+		// 	}
 			
-			let moved = currentShape.tick(layer)
-			board = draw(currentShape, layer);
+		// 	let moved = currentShape.tick(layer)
+		// 	board = draw(currentShape, layer);
 
-			if (!moved)
-			{
-				layer = currentShape.drawOn(layer)
-				currentShape = undefined
+		// 	if (!moved)
+		// 	{
+		// 		layer = currentShape.drawOn(layer)
+		// 		currentShape = undefined
 
-				let filterLayer = layer
-					.filter(row => row.some(cell => cell == 0));
-				score += [0, 100, 300, 500, 800][layer.length - filterLayer.length]
-				while (filterLayer.length != layer.length)
-				{
-					filterLayer.unshift(new Array(10).fill(0))
-					++lines;
-				}
-				layer = filterLayer
-			}
-		}, 500)
+		// 		let filterLayer = layer
+		// 			.filter(row => row.some(cell => cell == 0));
+		// 		score += [0, 100, 300, 500, 800][layer.length - filterLayer.length]
+		// 		while (filterLayer.length != layer.length)
+		// 		{
+		// 			filterLayer.unshift(new Array(10).fill(0))
+		// 			++lines;
+		// 		}
+		// 		layer = filterLayer
+		// 	}
+		// }, 500)
 
 		return () => {
-			console.log('leaveRoom')
 			socket.emit('leaveRoom')
-			clearInterval(interval)
+			// clearInterval(interval)
 		}
 	})
 </script>
@@ -91,12 +113,19 @@
 	}
 	.container {
 		width: min(90vw, 90vh / 2);
+		position: relative;
+		height: fit-content;
+	}
+	.board {
+		width: 100%;
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
-		position: relative;
 		overflow: hidden;
-		height: fit-content;
+		transition: .4s;
+	}
+	.gameover + .board {
+		filter: brightness(.5) saturate(.8) blur(6px);
 	}
 	.row {
 		display: flex;
@@ -127,13 +156,7 @@
 	}
 
 	@keyframes popin {
-		0% {
-			background: #0000;
-			transform: scale(0);
-		}
-		to {
-			background: #000000c4;
-		}
+		0% { transform: scale(0) }
 	}
 	.gameover {
 		position: absolute;
@@ -173,37 +196,32 @@
 
 <svelte:window
 	on:keydown={e => {
-		if (currentShape === undefined) return ;
-		if (e.key == 'ArrowLeft')
-			currentShape.move(layer, -1, 0)
-		else if (e.key == 'ArrowRight')
-			currentShape.move(layer, 1, 0)
-		else if (e.key == 'ArrowUp')
-			currentShape.rotateLeft(layer)
-		else if (e.key == 'ArrowDown')
-		{
-			currentShape.move(layer, 0, 1)
-			score += 1
-		}
-		else if (e.key == ' ')
-			while (currentShape.move(layer, 0, 1))
-				score += 2;
-		else
-			return ;
-		board = draw(currentShape, layer);
+		console.log('emit')
+		socket.emit(`event:${e.key}`)
+
+		// if (currentShape === undefined) return ;
+		// if (e.key == 'ArrowLeft')
+		// 	currentShape.move(layer, -1, 0)
+		// else if (e.key == 'ArrowRight')
+		// 	currentShape.move(layer, 1, 0)
+		// else if (e.key == 'ArrowUp')
+		// 	currentShape.rotateLeft(layer)
+		// else if (e.key == 'ArrowDown')
+		// {
+		// 	currentShape.move(layer, 0, 1)
+		// 	score += 1
+		// }
+		// else if (e.key == ' ')
+		// 	while (currentShape.move(layer, 0, 1))
+		// 		score += 2;
+		// else
+		// 	return ;
+		// board = draw(currentShape, layer);
 	}}
 />
 
 <main>
 	<div class="container">
-		{#each board as row}
-			<div class="row">
-				{#each row as cell}
-					<div class="cell cell-{cell}"></div>
-				{/each}
-			</div>
-		{/each}
-
 		{#if gameover}
 			<div class="gameover">
 				<h2>GAMEOVER</h2>
@@ -213,8 +231,19 @@
 				</div>
 			</div>
 		{/if}
+
+		<div class="board">
+			{#each board as row}
+				<div class="row">
+					{#each row as cell}
+						<div class="cell cell-{cell}"></div>
+					{/each}
+				</div>
+			{/each}
+		</div>
 	</div>
 	<aside>
+		<h1>{roomname}</h1>
 		<h2>{$user}</h2>
 		<div>
 			HIGH SCORE<br>

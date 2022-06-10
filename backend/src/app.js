@@ -32,9 +32,29 @@ io.on("connection", (socket) => {
 		}
 
 		sendUsers()
+
+		// Start the game shen on room
 		socket.on(`start:${room.name}`, () => {
 			io.in(room.name).emit(`start:${room.name}`);
 		})
+
+		// Apply event from user
+		socket.on(`event:${room.name}`, (key) => {
+			console.log(key)
+		})
+		// Init game for user
+		socket.on(`initgame`, (roomname) => {
+			console.log('test authorized')
+			if (roomname !== room.name)
+			{
+				socket.emit(`notauthorized:${roomname}`)
+				console.log('notauthorized')
+				return ;
+			}
+			// Send game data
+		})
+
+		// Disconnects
 		socket.on('leaveRoom', () => {
 			socket.leave(room.name)
 			sendUsers()
