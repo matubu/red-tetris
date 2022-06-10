@@ -170,11 +170,11 @@
 		else if (e.key == 'ArrowDown')
 		{
 			currentShape.move(layer, 0, 1)
-			++score
+			score += 1
 		}
 		else if (e.key == ' ')
 			while (currentShape.move(layer, 0, 1))
-				++score;
+				score += 2;
 		else
 			return ;
 		board = draw(currentShape, layer);
