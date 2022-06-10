@@ -29,7 +29,7 @@
 	function draw(currentShape, layer) {
 		let board;
 		let shadow = makeShadow(currentShape);
-		
+
 		board = shadow.drawOn(layer)
 		board = currentShape.drawOn(board)
 		return board
@@ -68,7 +68,7 @@
 				}
 				layer = filterLayer
 			}
-		}, 250)
+		}, 500)
 
 		return () => {
 			clearInterval(interval)
