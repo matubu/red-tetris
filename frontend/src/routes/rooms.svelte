@@ -11,10 +11,16 @@
 </script>
 
 <main class="main">
-	<a href="/">
+	<a id="logo" href="/">
 		<img width="340" alt="logo" src="/red-tetris-3d.png">
 	</a>
-	<div class="card">
+	<form class="card" 
+		on:submit={e => {
+			e.preventDefault()
+			if (!roominput.ok()) return ;
+			goto(`/room#${roominput.getValue()}`)
+		}}
+	>
 		<Input
 			bind:this={roominput}
 			placeholder="Enter a roomname"
@@ -26,21 +32,6 @@
 			}}
 			maxlength="16"
 		/>
-		<div class="action">
-			<button
-				class="red-button"
-				on:click={e => {
-					if (!roominput.ok()) return ;
-					goto(`/room#${roominput.getValue()}`)
-				}}
-			>CREATE</button>
-			<button
-				class="red-button"
-				on:click={e => {
-					if (!roominput.ok()) return ;
-					goto(`/room#${roominput.getValue()}`)
-				}}
-			>JOIN</button>
-		</div>
-	</div>
+		<button class="red-button">JOIN</button>
+	</form>
 </main>

@@ -13,9 +13,9 @@
 </script>
 
 <main class="main">
-	<a href="/">
+	<div>
 		<img width="340" alt="logo" src="/red-tetris-3d.png">
-	</a>
+	</div>
 	<form class="card" on:submit={e => {
 		e.preventDefault() // Prevent page reload
 		if (!userinput.ok()) return ;

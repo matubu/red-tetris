@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "start": "export $(cat .env) && node src/app.js",
+    "start": "export $(cat .env) && nodemon src/app.js",
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
   },
   "jest": {
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "mongodb": "^4.7.0",
+    "nodemon": "^2.0.16",
     "socket.io": "^4.5.1"
   },
   "devDependencies": {
