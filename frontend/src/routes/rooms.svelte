@@ -21,7 +21,7 @@
 			verify={value => {
 				if (!value)
 					return ('Roomname required')
-				if (!/^[a-z0-9_-]*$/.test(value))
+				if (!/^[a-z0-9_-]*$/i.test(value))
 					return ('Roomname should only contains [a-z][0-9]_-')
 			}}
 			maxlength="16"
