@@ -1,7 +1,7 @@
 class Shape {
 	constructor(colorid, shape) {
 		this.x = 5 - Math.ceil(shape.length / 2)
-		this.y = -shape.length
+		this.y = 0
 		this.colorid = colorid
 		this.shape = shape.map(row => [...row])
 	}
