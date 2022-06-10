@@ -27,6 +27,9 @@
 	export function setValue(_value) {
 		value = _value
 	}
+	export function focus() {
+		input.focus()
+	}
 </script>
 
 <div>

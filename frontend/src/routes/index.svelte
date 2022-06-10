@@ -8,6 +8,7 @@
 
 	onMount(() => {
 		userinput.setValue($user)
+		userinput.focus()
 	})
 </script>
 

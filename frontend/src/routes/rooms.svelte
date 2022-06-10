@@ -1,8 +1,13 @@
 <script>
 	import { goto } from "$app/navigation";
 	import Input from "$lib/Input.svelte";
+	import { onMount } from "svelte";
 
 	let roominput
+
+	onMount(() => {
+		roominput.focus()
+	})
 </script>
 
 <main class="main">
