@@ -168,10 +168,13 @@
 		else if (e.key == 'ArrowUp')
 			currentShape.rotateLeft(layer)
 		else if (e.key == 'ArrowDown')
+		{
 			currentShape.move(layer, 0, 1)
+			++score
+		}
 		else if (e.key == ' ')
 			while (currentShape.move(layer, 0, 1))
-				;
+				++score;
 		else
 			return ;
 		board = draw(currentShape, layer);
@@ -208,7 +211,10 @@
 			SCORE<br>
 			{score}
 		</div>
-		<button class="red-button">
+		<button
+			class="red-button"
+			on:click={() => window.location.reload(true)
+		}>
 			REPLAY
 		</button>
 	</div>
