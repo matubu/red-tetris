@@ -15,5 +15,9 @@
 		"@sveltejs/kit": "next",
 		"svelte": "^3.44.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"socket.io": "^4.5.1",
+		"socket.io-client": "^4.5.1"
+	}
 }

@@ -3,6 +3,8 @@
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { TETRIMINOS } from "$lib/Shape.js";
+	import { browser } from "$app/env"
+	import { io } from "socket.io-client"
 
 	let gameover = false
 	let currentShape
@@ -37,6 +39,16 @@
 	}
 
 	onMount(() => {
+		if (browser) {
+			const socket = io('http://localhost:4000');
+			socket.on("connect", () => {
+				console.log('connected');
+				socket.emit('joinRoom', {room:"roomName",user: "userName"});
+			})
+			socket.on('roomMessage', (arg) => {
+				console.log(arg);
+			})
+		}
 		let interval = setInterval(() => {
 			if (currentShape == undefined)
 			{
