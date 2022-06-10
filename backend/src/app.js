@@ -1,7 +1,6 @@
 import { connect } from './mongodb.js'
-
-// Socket.io
 import { Server } from "socket.io";
+import { launchGame } from './game.js';
 
 // import { gameRoom } from "./gameRoom.js"
 
@@ -39,9 +38,7 @@ io.on("connection", (socket) => {
 		})
 
 		// Apply event from user
-		socket.on(`event:${room.name}`, (key) => {
-			console.log(key)
-		})
+		
 		// Init game for user
 		socket.removeAllListeners('initgame')
 		socket.on('initgame', (roomname) => {
@@ -52,11 +49,36 @@ io.on("connection", (socket) => {
 				console.log('notauthorized')
 				return ;
 			}
-			// Send game data
+			
+			// Launch game loop
+			launchGame(io, room, socket);
+			// Send event game data
+			socket.on(`event:${room.name}`, (key) => {
+				console.log(key);
+				// if (currentShape === undefined) return ;
+				// if (e.key == 'ArrowLeft')
+				// 	currentShape.move(layer, -1, 0)
+				// else if (e.key == 'ArrowRight')
+				// 	currentShape.move(layer, 1, 0)
+				// else if (e.key == 'ArrowUp')
+				// 	currentShape.rotateLeft(layer)
+				// else if (e.key == 'ArrowDown')
+				// {
+				// 	currentShape.move(layer, 0, 1)
+				// 	score += 1
+				// }
+				// else if (e.key == ' ')
+				// 	while (currentShape.move(layer, 0, 1))
+				// 		score += 2;
+				// else
+				// 	return ;
+				// board = draw(currentShape, layer);
+			})
 		})
 
 		// Disconnects
 		socket.on('leaveRoom', () => {
+			console.log('test1');
 			socket.leave(room.name)
 			sendUsers()
 		})
