@@ -1,32 +1,37 @@
 <script>
 	import { user } from "$lib/user.js";
 	import { goto } from "$app/navigation";
+	import Input from "$lib/Input.svelte";
+	import { onMount } from "svelte";
 
-	const playButton = e => {
-		e.preventDefault() // Prevent page reload
-		console.log("Clicked !");
-		goto('/game')
-	}
+	let userinput
+
+	onMount(() => {
+		userinput.setValue($user)
+	})
 </script>
 
-
-<style>
-main {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 40px;
-}
-
-.logo-img {
-	image-rendering: pixelated;
-}
-</style>
-
-<main>
-	<img class="logo-img" width="340" alt="logo" src="/red-tetris-3d.png">
-	<form class="card" on:submit={playButton}>
-		<input bind:value={$user} class="red-input" required placeholder="Enter an username">
+<main class="main">
+	<a href="/">
+		<img width="340" alt="logo" src="/red-tetris-3d.png">
+	</a>
+	<form class="card" on:submit={e => {
+		e.preventDefault() // Prevent page reload
+		if (!userinput.ok()) return ;
+		user.set(userinput.getValue())
+		goto('/rooms')
+	}}>
+		<Input
+			bind:this={userinput}
+			placeholder="Enter a username"
+			verify={value => {
+				if (!value.trim())
+					return ('Username required')
+				if (!/^[a-z0-9_-]*$/.test(value))
+					return ('Username should only contains [a-z][0-9]_-')
+			}}
+			maxlength="16"
+		/>
 		<button class="red-button">PLAY</button>
 	</form>
 </main>

@@ -25,6 +25,15 @@
 	--dim: #ddd;
 }
 
+* {
+	font-family: inherit;
+	font-size: inherit;
+	box-sizing: border-box;
+	text-transform: uppercase;
+	color: inherit;
+	margin: 0;
+}
+
 html {
 	background: var(--back-0);
 	font-family: 'redtetris', sans-serif;
@@ -42,18 +51,23 @@ html, body {
 	color: var(--text);
 }
 
-* {
-	font-family: inherit;
-	font-size: inherit;
-	box-sizing: border-box;
-	text-transform: uppercase;
-	color: inherit;
+img {
+	image-rendering: pixelated;
+}
+
+.main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 40px;
+	width: 100%;
+	max-width: 500px;
 }
 
 .card {
 	border-radius: 10px;
 	background: var(--grey-back-0);
-	max-width: 800px;
+	width: 100%;
 	box-shadow: 0 0 50px -15px var(--back-1);
 	border: 4px solid var(--grey-border-0);
 	display: flex;
@@ -83,6 +97,7 @@ html, body {
 }
 
 .red-input {
+	width: 100%;
 	padding: .5em;
 	font-weight: lighter;
 	border-radius: 1.5px;
@@ -97,4 +112,24 @@ html, body {
 }
 ::placeholder {
 	color: var(--dim)
+}
+
+.action {
+	display: flex;
+	gap: 20px;
+}
+.action > .red-button {
+	flex: 1
+}
+
+h1 { font-size: 53px }
+h2 { font-size: 47px }
+
+.error,
+.error + input::placeholder {
+	color: var(--back-0)
+}
+.error + input {
+	border-color: var(--back-0) !important;
+	color: var(--back-0);
 }
