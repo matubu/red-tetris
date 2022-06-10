@@ -53,6 +53,7 @@ html, body {
 
 img {
 	image-rendering: pixelated;
+	pointer-events: none;
 }
 
 .main {
@@ -77,6 +78,7 @@ img {
 }
 
 .red-button {
+	text-align: center;
 	background: var(--back-1);
 	padding: 20px;
 	cursor: pointer;
