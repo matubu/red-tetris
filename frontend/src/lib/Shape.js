@@ -1,11 +1,11 @@
 class Shape {
 	constructor(colorid, shape) {
 		this.x = 5 - Math.ceil(shape.length / 2)
-		this.y = -shape.length
+		this.y = 0
 		this.colorid = colorid
 		this.shape = shape.map(row => [...row])
 	}
-	itersect(board) {
+	intersect(board) {
 		for (let y in this.shape)
 		{
 			for (let x in this.shape[y])
@@ -32,13 +32,13 @@ class Shape {
 		for (let y in this.shape)
 			for (let x in this.shape[y])
 				this.shape[y][x] = old_shape[this.shape.length - 1 - x][y]
-		if (this.itersect(board))
+		if (this.intersect(board))
 			this.shape = old_shape
 	}
 	move(board, ox, oy) {
 		this.x += ox
 		this.y += oy
-		if (this.itersect(board))
+		if (this.intersect(board))
 		{
 			this.x -= ox;
 			this.y -= oy;
@@ -59,9 +59,7 @@ class Shape {
 					let py = this.y + +y
 					let px = this.x + +x
 					if (board[py]?.[px] !== undefined)
-					{
 						board[py][px] = this.colorid
-					}
 				}
 			}
 		}
