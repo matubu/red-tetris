@@ -11,12 +11,9 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.22.2",
-		"@sveltejs/adapter-static": "^1.0.0-next.34",
+		"@sveltejs/adapter-node": "^1.0.0-next.78",
 		"@sveltejs/kit": "next",
 		"svelte": "^3.44.0"
 	},
-	"type": "module",
-	"dependencies": {
-		"@sveltejs/adapter-node": "^1.0.0-next.78"
-	}
+	"type": "module"
 }
