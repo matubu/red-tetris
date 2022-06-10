@@ -39,7 +39,17 @@ class Shape {
 			for (let x in this.shape[y])
 				this.shape[y][x] = old_shape[this.shape.length - 1 - x][y]
 		if (this.intersect(board))
-			this.shape = old_shape
+		{
+			this.move(board, 1, 0)
+			this.move(board, -1, 0)
+			if (this.intersect(board))
+			{
+				this.move(board, 2, 0)
+				this.move(board, -2, 0)
+				if (this.intersect(board))
+					this.shape = old_shape
+			}
+		}
 	}
 	move(board, ox, oy) {
 		this.x += ox

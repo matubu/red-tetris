@@ -9,6 +9,8 @@
 	let layer = emptyBoard()
 	let board = emptyBoard()
 
+	let score = 0;
+	let level = 0;
 	let lines = 0;
 
 	function emptyBoard() {
@@ -58,6 +60,7 @@
 
 				let filterLayer = layer
 					.filter(row => row.some(cell => cell == 0));
+				score += [0, 100, 300, 500, 800][layer.length - filterLayer.length]
 				while (filterLayer.length != layer.length)
 				{
 					filterLayer.unshift(new Array(10).fill(0))
@@ -164,8 +167,11 @@
 			currentShape.move(layer, 1, 0)
 		else if (e.key == 'ArrowUp')
 			currentShape.rotateLeft(layer)
-		else if (e.key == 'ArrowDown' || e.key == ' ')
+		else if (e.key == 'ArrowDown')
 			currentShape.move(layer, 0, 1)
+		else if (e.key == ' ')
+			while (currentShape.move(layer, 0, 1))
+				;
 		else
 			return ;
 		board = draw(currentShape, layer);
@@ -187,9 +193,9 @@
 		HIGH SCORE<br>
 		0<br>
 		SCORE<br>
-		0<br>
+		{score}<br>
 		LEVEL<br>
-		0<br>
+		{level}<br>
 		LINES<br>
 		{lines}
 	</aside>
@@ -200,7 +206,7 @@
 		GAMEOVER<br>
 		<div class="gameover-score">
 			SCORE<br>
-			0
+			{score}
 		</div>
 		<button class="red-button">
 			REPLAY
