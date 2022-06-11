@@ -157,7 +157,16 @@
 		}
 		else {
 			console.log('OthersBoards -> ', usersBoard);
-			usersBoard.set(data.clientId, data.board);
+			if (data.gameover)
+				usersBoard.set(data.clientId, {
+					...usersBoard.get(data.clientId),
+					gameover: true
+				})
+			else
+				usersBoard.set(data.clientId, {
+					username: data.username,
+					board: data.board
+				});
 		}
 	}}
 />

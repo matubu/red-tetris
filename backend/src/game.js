@@ -26,7 +26,8 @@ function draw(currentShape, layer) {
 function	sendGameData(io, socket, board) {
 	io.in(socket.room.name).emit(`gameInfo:${socket.room.name}`, {
 		clientId: socket.id,
-		board
+		board,
+		username: socket.username
 	});
 }
 
