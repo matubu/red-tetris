@@ -77,7 +77,7 @@
 		socket.emit('leaveRoom')
 		goto(`/`)
 	}}>
-		<img width="340" alt="logo" src="/red-tetris-3d.png">
+		<img alt="logo" src="/red-tetris-3d.png">
 	</div>
 	<div class="card">
 		<h1>{roomname}</h1>

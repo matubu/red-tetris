@@ -146,18 +146,17 @@
 <Listener
 	on="gameInfo:{roomname}"
 	handler={(data) => {
-		if (data === 'gameover') {
-			gameover = true;
-			return ;
+		console.log(`gameInfo:${roomname}| serverClientId =`, data.clientId
+		,'& frontClientId =', socket.id);
+		if (data.clientId === socket.id)
+		{
+			if (data.gameover)
+				gameover = true
+			else
+				board = data.board;
 		}
 		else {
-			console.log(`gameInfo:${roomname}| serverClientId =`, data.clientId
-			,'& frontClientId =', socket.id);
-			if (data.clientId === socket.id)
-				board = data.board;
-			else {
 
-			}
 		}
 	}}
 />

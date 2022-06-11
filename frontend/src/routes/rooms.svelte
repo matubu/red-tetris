@@ -12,7 +12,7 @@
 
 <main class="main">
 	<a id="logo" href="/">
-		<img width="340" alt="logo" src="/red-tetris-3d.png">
+		<img alt="logo" src="/red-tetris-3d.png">
 	</a>
 	<form class="card" 
 		on:submit={e => {

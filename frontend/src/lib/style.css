@@ -139,3 +139,7 @@ h2 { font-size: 47px }
 #logo {
 	cursor: pointer;
 }
+#logo > img {
+	width: 100vw;
+	max-width: 340px;
+}

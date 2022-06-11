@@ -23,12 +23,16 @@ function draw(currentShape, layer) {
 	return board
 }
 
-function	sendGameData(io, room, board, clientId) {
-	io.in(room.name).emit(`gameInfo:${room.name}`, {board, clientId});
+function	sendGameData(io, socket, board) {
+	io.in(socket.room.name).emit(`gameInfo:${socket.room.name}`, {
+		clientId: socket.id,
+		board
+	});
 }
 
-export function launchGame(io, room, objRoom, socket) {
-	console.log('lauchGame objRoom =', objRoom);
+export function launchGame(io, socket) {
+	console.log('lauchGame ', socket.username, socket.room);
+
 	let gameover = false
 	let currentShape;
 	let i = 0;
@@ -47,7 +51,10 @@ export function launchGame(io, room, objRoom, socket) {
 			if (newShape.intersect(layer))
 			{
 				gameover = true;
-				io.in(room.name).emit(`gameInfo:${room.name}`, "gameover");
+				io.in(socket.room.name).emit(`gameInfo:${socket.room.name}`, {
+					clientId: socket.id,
+					gameover: true
+				});
 				clearInterval(interval)
 				return ;
 			}
@@ -72,21 +79,21 @@ export function launchGame(io, room, objRoom, socket) {
 			}
 			layer = filterLayer
 		}
-		sendGameData(io, room, board, socket.id)
+		sendGameData(io, socket, board)
 	}, 500)
 
 	socket.on('leaveRoom', () => {
-		console.log(`${room.name}`, 'leaveRoom -> ', socket.id);
+		console.log(`${socket.room.name}`, 'leaveRoom -> ', socket.id);
 		clearInterval(interval)
 	})
 	socket.on('disconnect', () => {
-		console.log(`${room.name}`, 'disconnect -> ', socket.id);
+		console.log(`${socket.room.name}`, 'disconnect -> ', socket.id);
 		clearInterval(interval)
 	})
 	
 	// Apply event from user
-	socket.on(`event:${room.name}`, (key) => {
-		console.log(`${room.name}`, key);
+	socket.on(`event:${socket.room.name}`, (key) => {
+		console.log(`${socket.room.name}`, key);
 		if (currentShape === undefined) return ;
 		if (key == 'ArrowLeft')
 			currentShape.move(layer, -1, 0)
@@ -105,6 +112,6 @@ export function launchGame(io, room, objRoom, socket) {
 		else
 			return ;
 		board = draw(currentShape, layer);
-		sendGameData(io, room, board, socket.id)
+		sendGameData(io, socket, board)
 	})
 }
