@@ -1,6 +1,18 @@
 <script>
-	import { connected } from '$lib/user.js'
+	import { user, connected } from '$lib/user.js'
+	import { goto } from "$app/navigation";
+	import { browser } from "$app/env";
 	import '$lib/style.css'
+
+	if (browser)
+	{
+		user.subscribe(username => {
+			if (location.pathname === '/')
+				return ;
+			if (username === undefined || username === '')
+				goto('/');
+		})
+	}
 </script>
 
 <style>
@@ -15,9 +27,9 @@
 	}
 </style>
 
-{#if !$connected}
-<div class="disconnected">
-	DISCONNECTED
-</div>
-{/if}
 <slot />
+{#if !$connected}
+	<div class="disconnected">
+		DISCONNECTED
+	</div>
+{/if}

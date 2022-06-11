@@ -2,42 +2,18 @@
 	import { user, socket } from "$lib/user";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
-	import { TETRIMINOS } from "$lib/Shape.js";
-	import Room from "./room.svelte";
 
 	let roomname = ''
 	// let usersBoard = map('socket.id', 'board');
 	let gameover = false
-	let currentShape
-	let i = 0
-	let layer = emptyBoard()
-	let board = emptyBoard()
+
+	let board = new Array(20)
+			.fill()
+			.map(() => new Array(10).fill(0))
 
 	let score = 0;
 	let level = 0;
 	let lines = 0;
-
-	function emptyBoard() {
-		let board = new Array(20)
-			.fill()
-			.map(() => new Array(10).fill(0))
-		return (board)
-	}
-
-	function makeShadow(currentShape) {
-		let copy = currentShape.clone()
-		copy.colorid = 8
-		while (copy.tick(layer)) ;
-		return copy;
-	}
-	function draw(currentShape, layer) {
-		let board;
-		let shadow = makeShadow(currentShape);
-
-		board = shadow.drawOn(layer)
-		board = currentShape.drawOn(board)
-		return board
-	}
 
 	onMount(() => {
 		if (!(roomname = location.hash.slice(1).toLowerCase()))
@@ -175,10 +151,7 @@
 </style>
 
 <svelte:window
-	on:keydown={e => {
-		console.log('emit key')
-		socket.emit(`event:${roomname}`, e.key);
-	}}
+	on:keydown={e => socket.emit(`event:${roomname}`, e.key)}
 />
 
 <main>
