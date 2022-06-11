@@ -2,42 +2,18 @@
 	import { user, socket } from "$lib/user";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
-	// import { TETRIMINOS } from "$lib/Shape.js";
-	// import Room from "./room.svelte";
 
-	// let roomname = ''
+	let roomname = ''
 
-	// let gameover = false
-	// let currentShape
-	// let i = 0
-	// let layer = emptyBoard()
-	// let board = emptyBoard()
+	let gameover = false
 
-	// let score = 0;
-	// let level = 0;
-	// let lines = 0;
+	let board = new Array(20)
+			.fill()
+			.map(() => new Array(10).fill(0))
 
-	// function emptyBoard() {
-	// 	let board = new Array(20)
-	// 		.fill()
-	// 		.map(() => new Array(10).fill(0))
-	// 	return (board)
-	// }
-
-	// function makeShadow(currentShape) {
-	// 	let copy = currentShape.clone()
-	// 	copy.colorid = 8
-	// 	while (copy.tick(layer)) ;
-	// 	return copy;
-	// }
-	// function draw(currentShape, layer) {
-	// 	let board;
-	// 	let shadow = makeShadow(currentShape);
-
-	// 	board = shadow.drawOn(layer)
-	// 	board = currentShape.drawOn(board)
-	// 	return board
-	// }
+	let score = 0;
+	let level = 0;
+	let lines = 0;
 
 	onMount(() => {
 		if (!(roomname = location.hash.slice(1).toLowerCase()))
@@ -169,29 +145,7 @@
 </style>
 
 <svelte:window
-	on:keydown={e => {
-		console.log('emit key')
-		socket.emit(`event:${roomname}`, e.key);
-
-		// if (currentShape === undefined) return ;
-		// if (e.key == 'ArrowLeft')
-		// 	currentShape.move(layer, -1, 0)
-		// else if (e.key == 'ArrowRight')
-		// 	currentShape.move(layer, 1, 0)
-		// else if (e.key == 'ArrowUp')
-		// 	currentShape.rotateLeft(layer)
-		// else if (e.key == 'ArrowDown')
-		// {
-		// 	currentShape.move(layer, 0, 1)
-		// 	score += 1
-		// }
-		// else if (e.key == ' ')
-		// 	while (currentShape.move(layer, 0, 1))
-		// 		score += 2;
-		// else
-		// 	return ;
-		// board = draw(currentShape, layer);
-	}}
+	on:keydown={e => socket.emit(`event:${roomname}`, e.key)}
 />
 
 <main>
