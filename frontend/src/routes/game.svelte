@@ -60,43 +60,13 @@
 		socket.on('connect', initGame)
 		initGame()
 		socket.on(`gameInfo:${roomname}`, (board1) => {
+			if (board1 === 'gameover') {
+				gameover = true;
+				return ;
+			}
 			console.log(board);
 			board = board1;
 		});
-
-		// let interval = setInterval(() => {
-		// 	if (currentShape == undefined)
-		// 	{
-		// 		let newShape = TETRIMINOS[i++ % TETRIMINOS.length]
-		// 			.constructShape()
-		// 		if (newShape.intersect(layer))
-		// 		{
-		// 			gameover = true
-		// 			clearInterval(interval)
-		// 			return ;
-		// 		}
-		// 		currentShape = newShape
-		// 	}
-			
-		// 	let moved = currentShape.tick(layer)
-		// 	board = draw(currentShape, layer);
-
-		// 	if (!moved)
-		// 	{
-		// 		layer = currentShape.drawOn(layer)
-		// 		currentShape = undefined
-
-		// 		let filterLayer = layer
-		// 			.filter(row => row.some(cell => cell == 0));
-		// 		score += [0, 100, 300, 500, 800][layer.length - filterLayer.length]
-		// 		while (filterLayer.length != layer.length)
-		// 		{
-		// 			filterLayer.unshift(new Array(10).fill(0))
-		// 			++lines;
-		// 		}
-		// 		layer = filterLayer
-		// 	}
-		// }, 500)
 
 		return () => {
 			socket.emit('leaveRoom')
