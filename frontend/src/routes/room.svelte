@@ -7,14 +7,13 @@
 	let roomname = ''
 	let users = []
 
-	let gameMode = 'earth'
+	let gameMode = undefined
 
 	onMount(() => {
 		if (!(roomname = location.hash.slice(1).toLowerCase()))
 			goto('/rooms')
 		if (browser) {
 			const joinRoom = () => {
-				socket.emit('joinRoom', { name: roomname, user: $user });
 				socket.on(`join:${roomname}`, (_users) => {
 					users = _users
 					console.log("list", users);
@@ -22,6 +21,7 @@
 				socket.on(`start:${roomname}`, () => {
 					goto(`/game#${roomname}`)
 				})
+				socket.emit('joinRoom', { name: roomname, user: $user });
 			}
 
 			socket.on('connect', joinRoom)
@@ -33,7 +33,8 @@
 		}
 	})
 
-	$: socket.emit(`gameMode:${roomname}`)
+	// $: socket.emit(`gameMode:${roomname}`, gameMode)
+	$: console.log(`gameMode:${roomname}`)
 </script>
 
 <style>
