@@ -27,7 +27,7 @@
 					goto(`/game#${roomname}`)
 				})
 				socket.emit('joinRoom', { name: roomname, user: $user });
-				syncGameMode(gameMode)
+				syncGameMode(undefined)
 			}
 
 			socket.on('connect', joinRoom)
