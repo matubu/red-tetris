@@ -49,6 +49,14 @@
 </style>
 
 <Listener
+	on="gameHasStarted"
+	handler={() => {
+		console.log("game has already started");
+		goto('/rooms');
+		return ;
+	}}
+/>
+<Listener
 	on="join:{roomname}"
 	handler={(_users) => {
 		users = _users

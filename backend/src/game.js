@@ -61,13 +61,12 @@ export function launchGame(io, socket) {
 	let score = 0;
 	let lines = 0;
 	let nextShape = undefined;
-	let futurePieces = socket.room.futurePieces;
-
+	let pieceSequence = socket.room.pieceSequence;
 	let interval = setInterval(() => {
-		nextShape = TETRIMINOS[futurePieces[i + 1 % futurePieces.length]]
+		nextShape = TETRIMINOS[pieceSequence[i + 1 % pieceSequence.length]]
 		if (currentShape == undefined)
 		{
-			let newShape = TETRIMINOS[futurePieces[i++ % futurePieces.length]]
+			let newShape = TETRIMINOS[pieceSequence[i++ % pieceSequence.length]]
 				.constructShape()
 		
 			if (newShape.intersect(layer))
