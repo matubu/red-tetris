@@ -1,4 +1,5 @@
 import { TETRIMINOS } from "./Shape.js";
+import { Player } from "./Player.js";
 
 function emptyBoard() {
 	let board = new Array(20)
@@ -138,4 +139,60 @@ export function launchGame(io, socket, currRoom) {
 		board = draw(currentShape, layer);
 		sendGameData(socket, currRoom, board, { score, lines }, nextShape)
 	})
+}
+
+
+
+
+export class Game {
+	constructor(_nameRoom, _gameMode) {
+		this.name = _nameRoom;
+		this.gameMode = _gameMode;
+		this.pieceSequence = this.makePieceSequence();
+		this.started = false;
+		this.players = new Map() // Array of Player
+	}
+
+	makePieceSequence() {
+		let Iterations = 32;
+		let sequence = [];
+		while (Iterations) {
+			let tetriminos = [0, 1, 2, 3, 4, 5, 6]
+			let currentIndex = tetriminos.length, randomIndex;
+	
+			// While there remain elements to shuffle.
+			while (currentIndex != 0) {
+	
+				// Pick a remaining element.
+				randomIndex = Math.floor(Math.random() * currentIndex);
+				currentIndex--;
+	
+				// Swap two element with the random index
+				[tetriminos[currentIndex], tetriminos[randomIndex]] = [tetriminos[randomIndex], tetriminos[currentIndex]];
+			}
+			sequence.push(...tetriminos);
+			Iterations--;
+		}
+		return sequence;
+	}
+
+	sendUsersList() {
+		let users = this.getPlayerList().map(player => player.username);
+		console.log(users);
+		io.in(this.name).emit(`join:${this.name}`, users);
+	}
+
+	addPlayer(socket) {
+		socket.join(this.name);
+		this.players.set(socket.id, new Player(socket))
+	}
+	getPlayerList() {
+		return [...this.players.values()]
+	}
+	removePlayer(socket) {
+		console.log('removePlayer', this);
+		socket.leave(this.name)
+		this.players.delete(socket.id)
+		this.sendUsersList()
+	}
 }

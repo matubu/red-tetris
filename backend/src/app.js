@@ -1,8 +1,6 @@
 // import { connect } from './mongodb.js'
 import { Server } from "socket.io";
-import { launchGame } from './game.js';
-
-// import { gameRoom } from "./gameRoom.js"
+import { Game, launchGame } from './Game.js';
 
 // let db = await connect()
 
@@ -14,68 +12,6 @@ const io = new Server({
 });
 
 let rooms = new Map();
-
-class Player {
-	constructor(_socket/*, _game*/) {
-		this.username = _socket.username;
-		this.socket = _socket;
-		// this.game = _game;
-		this.board = undefined;
-	}
-}
-
-class Game {
-	constructor(_nameRoom, _gameMode) {
-		this.name = _nameRoom;
-		this.gameMode = _gameMode;
-		this.pieceSequence = this.makePieceSequence();
-		this.started = false;
-		this.players = new Map() // Array of Player
-	}
-
-	makePieceSequence() {
-		let Iterations = 32;
-		let sequence = [];
-		while (Iterations) {
-			let tetriminos = [0, 1, 2, 3, 4, 5, 6]
-			let currentIndex = tetriminos.length, randomIndex;
-	
-			// While there remain elements to shuffle.
-			while (currentIndex != 0) {
-	
-				// Pick a remaining element.
-				randomIndex = Math.floor(Math.random() * currentIndex);
-				currentIndex--;
-	
-				// Swap two element with the random index
-				[tetriminos[currentIndex], tetriminos[randomIndex]] = [tetriminos[randomIndex], tetriminos[currentIndex]];
-			}
-			sequence.push(...tetriminos);
-			Iterations--;
-		}
-		return sequence;
-	}
-
-	sendUsersList() {
-		let users = this.getPlayerList().map(player => player.username);
-		console.log(users);
-		io.in(this.name).emit(`join:${this.name}`, users);
-	}
-
-	addPlayer(socket) {
-		socket.join(this.name);
-		this.players.set(socket.id, new Player(socket))
-	}
-	getPlayerList() {
-		return [...this.players.values()]
-	}
-	removePlayer(socket) {
-		console.log('removePlayer', this);
-		socket.leave(this.name)
-		this.players.delete(socket.id)
-		this.sendUsersList()
-	}
-}
 
 io.on("connection", (socket) => {
 
