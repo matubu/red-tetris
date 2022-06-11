@@ -16,8 +16,8 @@ const io = new Server({
 let rooms = new Map();
 
 class Player {
-	constructor(_username, _socket/*, _game*/) {
-		this.username = _username;
+	constructor(_socket/*, _game*/) {
+		this.username = _socket.username;
 		this.socket = _socket;
 		// this.game = _game;
 		this.board = undefined;
@@ -30,7 +30,7 @@ class Game {
 		this.gameMode = _gameMode;
 		this.pieceSequence = this.makePieceSequence();
 		this.started = false;
-		this.players = [] // Array of Player
+		this.players = new Map() // Array of Player
 	}
 
 	makePieceSequence() {
@@ -57,11 +57,23 @@ class Game {
 	}
 
 	sendUsersList() {
-		let users = this.players.map((player) => {
-			return player.username;
-		});
+		let users = this.getPlayerList().map(player => player.username);
 		console.log(users);
 		io.in(this.name).emit(`join:${this.name}`, users);
+	}
+
+	addPlayer(socket) {
+		socket.join(this.name);
+		this.players.set(socket.id, new Player(socket))
+	}
+	getPlayerList() {
+		return this.players.values()
+	}
+	removePlayer(id) {
+		console.log('removePlayer', this);
+		socket.leave(currRoom.name)
+		this.players.delete(id)
+		this.sendUsersList()
 	}
 }
 
@@ -109,13 +121,10 @@ io.on("connection", (socket) => {
 			return ;
 		}
 
-		currRoom.players.push(new Player(room.user, socket));
-
-		console.log('currRoom.players ->', currRoom.players);
-
 		socket.username = currRoom.user;
-		socket.room = currRoom;
-		socket.join(currRoom.name);
+
+		currRoom.addPlayer(socket)
+		console.log('currRoom.players ->', currRoom.getPlayerList());
 
 		currRoom.sendUsersList()
 
@@ -133,13 +142,8 @@ io.on("connection", (socket) => {
 		})
 
 		// Disconnects
-		socket.on('leaveRoom', () => {
-			console.log('leaveRoom1', room);
-			socket.leave(currRoom.name)
-			currRoom.players.
-			currRoom.sendUsersList()
-		})
-		socket.on('disconnect', currRoom.sendUsersList)
+		socket.on('leaveRoom', () => currRoom.removePlayer(socket.id))
+		socket.on('disconnect', () => currRoom.removePlayer(socket.id))
 	})
 
 });
