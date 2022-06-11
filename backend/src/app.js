@@ -19,6 +19,12 @@ io.on("connection", (socket) => {
 	console.log("connection socket", socket.id)
 
 	socket.on('joinRoom', (room) => {
+
+		// Make sure user as an username
+		if (room.user === null || room.user === undefined || room.user === '') {
+			console.log('here');
+			return ;
+		}
 		socket.username = room.user;
 
 		console.log('joinRoom', room)
@@ -66,7 +72,7 @@ io.on("connection", (socket) => {
 			}
 			// Launch game loop
 			console.log(room.name, 'launchGame');
-			launchGame(io, room, rooms.get(room.name), socket);
+			launchGame(io, room/*, rooms.get(room.name)*/, socket);
 		})
 
 		// Disconnects

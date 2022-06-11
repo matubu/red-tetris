@@ -70,6 +70,7 @@ export function launchGame(io, room, socket) {
 		io.in(room.name).emit(`gameInfo:${room.name}`, board);
 	}, 500)
 
+	console.log(socket);
 	socket.on('leaveRoom', () => {
 		console.log(`${room.name}`, 'leaveRoom -> ', socket.id);
 		clearInterval(interval)

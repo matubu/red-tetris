@@ -1,6 +1,7 @@
 import { writable } from "svelte/store";
 import { browser } from "$app/env";
-import { io } from "socket.io-client"
+import { io } from "socket.io-client";
+import { goto } from "$app/navigation";
 
 export let user = writable();
 export let connected = writable(true);
@@ -8,8 +9,17 @@ export let socket;
 
 if (browser)
 {
-	user.set(localStorage.getItem('user'))
-	user.subscribe(username => localStorage.setItem('user', username))
+	user.subscribe(username => {
+		console.log(username);
+		if (username === undefined || username === '') {
+			console.log(location)
+			if (location.pathname !== '/')
+				goto('/');
+			return ;
+		}
+		localStorage.setItem('user', username)
+	});
+	user.set(localStorage.getItem('user') ?? '')
 
 	socket = io(`http://${location.hostname}:4000`)
 	socket.on("connect", () => connected.set(true))
