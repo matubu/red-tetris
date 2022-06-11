@@ -9,6 +9,11 @@
 
 	let gameMode = undefined
 
+	function syncGameMode(gameMode) {
+		if (browser)
+			socket.emit(`gameMode:${roomname}`, gameMode)
+	}
+
 	onMount(() => {
 		if (!(roomname = location.hash.slice(1).toLowerCase()))
 			goto('/rooms')
@@ -22,6 +27,7 @@
 					goto(`/game#${roomname}`)
 				})
 				socket.emit('joinRoom', { name: roomname, user: $user });
+				syncGameMode(gameMode)
 			}
 
 			socket.on('connect', joinRoom)
@@ -32,9 +38,6 @@
 			})
 		}
 	})
-
-	// $: socket.emit(`gameMode:${roomname}`, gameMode)
-	$: console.log(`gameMode:${roomname}`)
 </script>
 
 <style>
@@ -72,17 +75,20 @@
 		{/each}
 		<div class="action">
 			<input type="radio" bind:group={gameMode} name="gameMode"
-				value="moon" id="moon" />
+				value="moon" id="moon"
+				on:change={() => syncGameMode(gameMode)} />
 			<label class="red-button" for="moon">
 				<img src="/game-mode/moon.png" alt="">
 			</label>
 			<input type="radio" bind:group={gameMode} name="gameMode"
-				value="earth" id="earth" />
+				value="earth" id="earth"
+				on:change={() => syncGameMode(gameMode)} />
 			<label class="red-button" for="earth">
 				<img src="/game-mode/earth.png" alt="">
 			</label>
 			<input type="radio" bind:group={gameMode} name="gameMode"
-				value="sun" id="sun" />
+				value="sun" id="sun"
+				on:change={() => syncGameMode(gameMode)} />
 			<label class="red-button" for="sun">
 				<img src="/game-mode/sun.png" alt="">
 			</label>

@@ -54,10 +54,10 @@ io.on("connection", (socket) => {
 
 		// Change game mode
 		socket.on(`gameMode:${room.name}`, (gameMode) => {
-			console.log(gameMode)
+			console.log('gameMode', gameMode)
 			let newGameMode = gameMode ?? rooms.get(room.name).gameMode
 			rooms.get(room.name).gameMode = newGameMode
-			io.in(room.name).emit(`start:${newGameMode}`);
+			io.in(room.name).emit(`gameMode:${room.name}`, newGameMode);
 		})
 
 		// Init game for user
