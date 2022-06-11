@@ -13,7 +13,6 @@
 			.map(() => new Array(10).fill(0))
 
 	let score = 0;
-	let level = 0;
 	let lines = 0;
 
 	function initGame() {
@@ -153,8 +152,11 @@
 		{
 			if (data.gameover)
 				gameover = true
-			else
+			else {
 				board = data.board;
+				score = data.scores.score;
+				lines = data.scores.lines;
+			}
 		}
 		else {
 			console.log('debug ->', data.clientId,socket.id);
@@ -162,12 +164,13 @@
 			if (data.gameover)
 				usersBoard.set(data.clientId, {
 					...usersBoard.get(data.clientId),
-					gameover: true
+					gameover: true,
 				})
 			else
 				usersBoard.set(data.clientId, {
 					username: data.username,
-					board: data.board
+					board: data.board,
+					scores: data.scores
 				});
 		}
 	}}
@@ -203,8 +206,6 @@
 			0<br>
 			SCORE<br>
 			{score}<br>
-			LEVEL<br>
-			{level}<br>
 			LINES<br>
 			{lines}<br>
 		</div>

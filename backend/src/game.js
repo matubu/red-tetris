@@ -23,11 +23,12 @@ function draw(currentShape, layer) {
 	return board
 }
 
-function	sendGameData(io, socket, board) {
+function	sendGameData(io, socket, board, scores) {
 	io.in(socket.room.name).emit(`gameInfo:${socket.room.name}`, {
-		clientId: socket.id,
-		board,
-		username: socket.username
+		clientId: socket.id, // his socket id to identify it in frontend
+		board, // contains the board of one player
+		username: socket.username, // his username
+		scores // contains score and lines
 	});
 }
 
@@ -41,7 +42,6 @@ export function launchGame(io, socket) {
 	let board = emptyBoard();
 
 	let score = 0;
-	let level = 0;
 	let lines = 0;
 
 	console.log('setInterval')
@@ -81,7 +81,7 @@ export function launchGame(io, socket) {
 			}
 			layer = filterLayer
 		}
-		sendGameData(io, socket, board)
+		sendGameData(io, socket, board, {score, lines})
 	}, {
 		sun: 100,
 		earth: 500,
@@ -118,6 +118,6 @@ export function launchGame(io, socket) {
 		else
 			return ;
 		board = draw(currentShape, layer);
-		sendGameData(io, socket, board)
+		sendGameData(io, socket, board, {score, lines})
 	})
 }
