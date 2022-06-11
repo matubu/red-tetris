@@ -45,7 +45,7 @@ export function launchGame(io, socket) {
 	let lines = 0;
 	let nextShape = undefined;
 	let futurePieces = socket.room.futurePieces;
-	console.log('setInterval')
+
 	let interval = setInterval(() => {
 		nextShape = TETRIMINOS[futurePieces[i + 1 % futurePieces.length]]
 		if (currentShape == undefined)
@@ -86,9 +86,10 @@ export function launchGame(io, socket) {
 		}
 		sendGameData(io, socket, board, {score, lines}, nextShape);
 	}, {
-		sun: 100,
-		earth: 500,
-		moon: 1000
+		blackhole: 75,
+		sun: 150,
+		earth: 400,
+		moon: 800
 	}[socket.room.gameMode])
 
 	const leaveRoom = () => {

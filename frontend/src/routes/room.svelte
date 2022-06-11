@@ -103,6 +103,12 @@
 			<label class="red-button" for="sun">
 				<img src="/game-mode/sun.png" alt="">
 			</label>
+			<input type="radio" bind:group={gameMode} name="gameMode"
+				value="blackhole" id="blackhole"
+				on:change={() => syncGameMode(gameMode)} />
+			<label class="red-button" for="blackhole">
+				<img src="/game-mode/blackhole.png" alt="">
+			</label>
 		</div>
 		<div class="action">
 			<button

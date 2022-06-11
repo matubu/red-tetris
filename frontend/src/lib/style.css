@@ -23,6 +23,8 @@
 	--grey-border-1: #6f6f73;
 	--grey-border-2: #99999e;
 	--dim: #ddd;
+
+	font-size: 26px;
 }
 
 * {
@@ -37,7 +39,6 @@
 html {
 	background: var(--back-0);
 	font-family: 'redtetris', sans-serif;
-	font-size: 30px;
 }
 
 body {
@@ -124,8 +125,8 @@ img {
 	flex: 1
 }
 
-h1 { font-size: 53px }
-h2 { font-size: 47px }
+h1 { font-size: 2rem }
+h2 { font-size: 2.5rem }
 
 .error,
 .error + input::placeholder {

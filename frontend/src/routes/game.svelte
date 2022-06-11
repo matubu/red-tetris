@@ -46,7 +46,8 @@
 		justify-content: center;
 	}
 	.container {
-		width: min(90vw, 90vh / 2);
+		width: 100%;
+		max-width: calc(90vh / 2);
 		position: relative;
 		height: fit-content;
 	}
@@ -59,7 +60,7 @@
 		transition: .4s;
 	}
 	.gameover + .board {
-		filter: brightness(.5) saturate(.8) blur(6px);
+		filter: brightness(.5) saturate(.8);
 	}
 	.row {
 		display: flex;
@@ -75,7 +76,6 @@
 		--shadow: inset 0 0 0 5px var(--shadow-color), inset -5px -5px var(--shadow-color);
 		box-shadow: var(--shadow), 0 0 6px var(--color);
 	}
-	.cell-0 { --color: #3f3f3f; }
 	.cell-1 { --color: #8fcdee; }
 	.cell-2 { --color: #5555ef; }
 	.cell-3 { --color: #e58e36; }
@@ -88,6 +88,8 @@
 		--shadow-color: #0d0d171e;
 		box-shadow: var(--shadow); 
 	}
+	.small .cell-8,
+	.cell-0 { --color: #3f3f3f; }
 
 	@keyframes popin {
 		0% { transform: scale(0) }
@@ -125,6 +127,31 @@
 		display: flex;
 		flex-direction: column;
 		gap: 30px;
+	}
+
+	.small.board {
+		width: 10vw;
+		gap: 0
+	}
+	.small-gameover {
+		filter: brightness(.3) saturate(.6);
+	}
+	.small .gameover-score {
+		font-size: .5rem;
+	}
+	.small .row {
+		gap: 0
+	}
+	.small .cell {
+		border-radius: 0;
+		box-shadow: none !important;
+	}
+
+	.others {
+		max-width: 10vw;
+	}
+	.self {
+		max-width: 30vw;
 	}
 </style>
 
@@ -172,11 +199,27 @@
 					board: data.board,
 					scores: data.scores
 				});
+			usersBoard = usersBoard
 		}
 	}}
 />
 
 <main>
+	<aside class="others">
+		{#each [...usersBoard.entries()] as [_, { username, board, scores, gameover }]}
+			{username}<br>
+			SCORE: {scores.score}
+			<div class="small board {gameover ? 'small-gameover' : ''}">
+				{#each board as row}
+					<div class="row">
+						{#each row as cell}
+							<div class="cell cell-{cell}"></div>
+						{/each}
+					</div>
+				{/each}
+			</div>
+		{/each}
+	</aside>
 	<div class="container">
 		{#if gameover}
 			<div class="gameover">
@@ -198,7 +241,7 @@
 			{/each}
 		</div>
 	</div>
-	<aside>
+	<aside class="self">
 		<h1>{roomname}</h1>
 		<h2>{$user}</h2>
 		<div>
