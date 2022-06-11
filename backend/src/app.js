@@ -14,6 +14,30 @@ const io = new Server({
 	}
 });
 
+function makeFuturePieces() {
+	let Iterations = 32;
+	let sequence = [];
+	while (Iterations) {
+		let tetriminos = [0, 1, 2, 3, 4, 5, 6]
+		let currentIndex = tetriminos.length, randomIndex;
+
+		// While there remain elements to shuffle.
+		while (currentIndex != 0) {
+
+			// Pick a remaining element.
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex--;
+
+			// Swap two element with the random index
+			[tetriminos[currentIndex], tetriminos[randomIndex]] = [tetriminos[randomIndex], tetriminos[currentIndex]];
+		}
+		console.log('randomShuffle ->', tetriminos);
+		sequence.push(...tetriminos);
+		Iterations--;
+	}
+	return sequence
+}
+
 io.on("connection", (socket) => {
 
 	console.log("connection socket", socket.id)
@@ -48,7 +72,7 @@ io.on("connection", (socket) => {
 			rooms.set(room.name, {
 				name: room.name,
 				gameMode: 'earth',
-				seed: Math.random()
+				futurePieces: makeFuturePieces()
 			})
 		}
 		socket.username = room.user;

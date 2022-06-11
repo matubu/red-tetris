@@ -43,13 +43,16 @@ export function launchGame(io, socket) {
 
 	let score = 0;
 	let lines = 0;
-
+	let nextShape = undefined;
+	let futurePieces = socket.room.futurePieces;
 	console.log('setInterval')
 	let interval = setInterval(() => {
+		nextShape = TETRIMINOS[futurePieces[i + 1 % futurePieces.length]]
 		if (currentShape == undefined)
 		{
-			let newShape = TETRIMINOS[i++ % TETRIMINOS.length]
+			let newShape = TETRIMINOS[futurePieces[i++ % futurePieces.length]]
 				.constructShape()
+		
 			if (newShape.intersect(layer))
 			{
 				gameover = true;
@@ -81,7 +84,7 @@ export function launchGame(io, socket) {
 			}
 			layer = filterLayer
 		}
-		sendGameData(io, socket, board, {score, lines})
+		sendGameData(io, socket, board, {score, lines}, nextShape);
 	}, {
 		sun: 100,
 		earth: 500,
@@ -118,6 +121,6 @@ export function launchGame(io, socket) {
 		else
 			return ;
 		board = draw(currentShape, layer);
-		sendGameData(io, socket, board, {score, lines})
+		sendGameData(io, socket, board, {score, lines}, nextShape)
 	})
 }
