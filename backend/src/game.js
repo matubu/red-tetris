@@ -81,7 +81,11 @@ export function launchGame(io, socket) {
 			layer = filterLayer
 		}
 		sendGameData(io, socket, board)
-	}, 500)
+	}, {
+		sun: 100,
+		earth: 500,
+		moon: 1000
+	}[socket.room.gameMode])
 
 	socket.on('leaveRoom', () => {
 		console.log(`${socket.room.name}`, 'leaveRoom -> ', socket.id);
