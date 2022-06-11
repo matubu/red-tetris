@@ -5,8 +5,8 @@
 	import Listener from '$lib/Listener.svelte';
 
 	let roomname = ''
-	// let usersBoard = map('socket.id', 'board');
-	let gameover = false
+	let usersBoard = new Map();
+	let gameover = false;
 
 	let board = new Array(20)
 			.fill()
@@ -156,7 +156,8 @@
 				board = data.board;
 		}
 		else {
-
+			console.log('OthersBoards -> ', usersBoard);
+			usersBoard.set(data.clientId, data.board);
 		}
 	}}
 />
