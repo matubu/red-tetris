@@ -32,13 +32,11 @@ io.on("connection", (socket) => {
 
 		sendUsers()
 
-		// Start the game shen on room
+		// Start the game on room
 		socket.on(`start:${room.name}`, () => {
 			io.in(room.name).emit(`start:${room.name}`);
 		})
 
-		// Apply event from user
-		
 		// Init game for user
 		socket.removeAllListeners('initgame')
 		socket.on('initgame', (roomname) => {
@@ -49,31 +47,9 @@ io.on("connection", (socket) => {
 				console.log('notauthorized')
 				return ;
 			}
-			
 			// Launch game loop
+			console.log(room.name, 'launchGame');
 			launchGame(io, room, socket);
-			// Send event game data
-			socket.on(`event:${room.name}`, (key) => {
-				console.log(key);
-				// if (currentShape === undefined) return ;
-				// if (e.key == 'ArrowLeft')
-				// 	currentShape.move(layer, -1, 0)
-				// else if (e.key == 'ArrowRight')
-				// 	currentShape.move(layer, 1, 0)
-				// else if (e.key == 'ArrowUp')
-				// 	currentShape.rotateLeft(layer)
-				// else if (e.key == 'ArrowDown')
-				// {
-				// 	currentShape.move(layer, 0, 1)
-				// 	score += 1
-				// }
-				// else if (e.key == ' ')
-				// 	while (currentShape.move(layer, 0, 1))
-				// 		score += 2;
-				// else
-				// 	return ;
-				// board = draw(currentShape, layer);
-			})
 		})
 
 		// Disconnects

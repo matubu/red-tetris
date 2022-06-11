@@ -24,7 +24,6 @@ function draw(currentShape, layer) {
 }
 
 export function launchGame(io, room, socket) {
-	console.log(io, room, socket);
 	let gameover = false
 	let currentShape;
 	let i = 0;
@@ -42,7 +41,8 @@ export function launchGame(io, room, socket) {
 				.constructShape()
 			if (newShape.intersect(layer))
 			{
-				gameover = true
+				gameover = true;
+				io.in(room.name).emit(`gameInfo:${room.name}`, "gameover");
 				clearInterval(interval)
 				return ;
 			}
@@ -71,7 +71,35 @@ export function launchGame(io, room, socket) {
 	}, 500)
 
 	socket.on('leaveRoom', () => {
-		console.log('test2');
+		console.log(`${room.name}`, 'leaveRoom -> ', socket.id);
 		clearInterval(interval)
+	})
+	socket.on('disconnect', () => {
+		console.log(`${room.name}`, 'disconnect -> ', socket.id);
+		clearInterval(interval)
+	})
+	
+	// Apply event from user
+	socket.on(`event:${room.name}`, (key) => {
+		console.log(`${room.name}`, key);
+		if (currentShape === undefined) return ;
+		if (key == 'ArrowLeft')
+			currentShape.move(layer, -1, 0)
+		else if (key == 'ArrowRight')
+			currentShape.move(layer, 1, 0)
+		else if (key == 'ArrowUp')
+			currentShape.rotateLeft(layer)
+		else if (key == 'ArrowDown')
+		{
+			currentShape.move(layer, 0, 1)
+			score += 1
+		}
+		else if (key == ' ')
+			while (currentShape.move(layer, 0, 1))
+				score += 2;
+		else
+			return ;
+		board = draw(currentShape, layer);
+		io.in(room.name).emit(`gameInfo:${room.name}`, board);
 	})
 }
