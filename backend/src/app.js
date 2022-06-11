@@ -31,7 +31,7 @@ function makeFuturePieces() {
 			// Swap two element with the random index
 			[tetriminos[currentIndex], tetriminos[randomIndex]] = [tetriminos[randomIndex], tetriminos[currentIndex]];
 		}
-		console.log('randomShuffle ->', tetriminos);
+		// console.log('randomShuffle ->', tetriminos);
 		sequence.push(...tetriminos);
 		Iterations--;
 	}
@@ -40,12 +40,12 @@ function makeFuturePieces() {
 
 io.on("connection", (socket) => {
 
-	console.log("connection socket", socket.id)
+	// console.log("connection socket", socket.id)
 
 	// Init game for user
 	socket.removeAllListeners('initgame')
 	socket.on('initgame', (roomname) => {
-		console.log('test authorized', socket.room, roomname)
+		// console.log('test authorized', socket.room, roomname)
 		if (roomname !== socket?.room?.name)
 		{
 			socket.emit(`notauthorized:${roomname}`)
@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
 			return ;
 		}
 		// Launch game loop
-		console.log(socket.room, 'launchGame');
+		// console.log(socket.room, 'launchGame');
 		launchGame(io, socket);
 	})
 
@@ -61,11 +61,11 @@ io.on("connection", (socket) => {
 
 		// Make sure user as an username
 		if (room.user === undefined || room.user === '') {
-			console.log('here');
+			// console.log('here');
 			return ;
 		}
 
-		console.log('joinRoom', room)
+		// console.log('joinRoom', room)
 
 		if (!rooms.has(room.name))
 		{
@@ -106,7 +106,7 @@ io.on("connection", (socket) => {
 
 		// Disconnects
 		socket.on('leaveRoom', () => {
-			console.log('leaveRoom1', room);
+			// console.log('leaveRoom1', room);
 			socket.leave(room.name)
 			sendUsersList()
 		})

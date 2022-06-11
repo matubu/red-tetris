@@ -10,7 +10,7 @@ if (browser)
 {
 	user.set(localStorage.getItem('user') ?? '')
 	user.subscribe(username => {
-		console.log(username);
+		// console.log(username);
 		localStorage.setItem('user', username)
 	});
 

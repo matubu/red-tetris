@@ -52,7 +52,6 @@
 	on="join:{roomname}"
 	handler={(_users) => {
 		users = _users
-		console.log("list", users);
 	}}
 />
 <Listener

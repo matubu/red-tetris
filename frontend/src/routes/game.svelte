@@ -16,7 +16,6 @@
 	let lines = 0;
 
 	function initGame() {
-		console.log('initgame', roomname)
 		socket.emit('initgame', roomname)
 	}
 
@@ -24,12 +23,9 @@
 		if (!(roomname = location.hash.slice(1).toLowerCase()))
 			goto('/rooms')
 
-		console.log(`emit game: initgame`)
-
 		initGame()
 
 		return () => {
-			console.log('leaveRoom')
 			socket.emit('leaveRoom')
 		}
 	})
@@ -37,6 +33,7 @@
 
 <style>
 	main {
+		overflow: hidden;
 		width: 100%;
 		height: 100%;
 		background: #0c0c11;
@@ -88,7 +85,6 @@
 		--shadow-color: #0d0d171e;
 		box-shadow: var(--shadow); 
 	}
-	.small .cell-8,
 	.cell-0 { --color: #3f3f3f; }
 
 	@keyframes popin {
@@ -129,26 +125,26 @@
 		gap: 30px;
 	}
 
-	.small.board {
-		width: 10vw;
-		gap: 0
+	.small-board {
+		display: flex;
+		aspect-ratio: 1/2;
+		background: var(--back-1);
+	}
+	.small-board > div {
+		background: var(--grey-back-1);
+		flex: 1;
 	}
 	.small-gameover {
 		filter: brightness(.3) saturate(.6);
 	}
-	.small .gameover-score {
-		font-size: .5rem;
-	}
-	.small .row {
-		gap: 0
-	}
-	.small .cell {
-		border-radius: 0;
-		box-shadow: none !important;
-	}
 
 	.others {
-		max-width: 10vw;
+		max-width: 15vw;
+		overflow-y: auto;
+		padding-right: 10px;
+	}
+	.others > div {
+		width: 100%;
 	}
 	.self {
 		max-width: 30vw;
@@ -162,7 +158,7 @@
 <Listener
 	on="notauthorized:{roomname}"
 	handler={() => {
-		console.log('notauthorized');
+		// console.log('notauthorized');
 		goto('/rooms')
 	}}
 />
@@ -173,8 +169,6 @@
 <Listener
 	on="gameInfo:{roomname}"
 	handler={(data) => {
-		console.log(`gameInfo:${roomname}| serverClientId =`, data.clientId
-		,'& frontClientId =', socket.id);
 		if (data.clientId === socket.id)
 		{
 			if (data.gameover)
@@ -186,19 +180,19 @@
 			}
 		}
 		else {
-			console.log('debug ->', data.clientId,socket.id);
-			console.log('OthersBoards -> ', usersBoard);
 			if (data.gameover)
 				usersBoard.set(data.clientId, {
 					...usersBoard.get(data.clientId),
 					gameover: true,
 				})
 			else
+			{
 				usersBoard.set(data.clientId, {
 					username: data.username,
-					board: data.board,
+					heights: data.heights,
 					scores: data.scores
 				});
+			}
 			usersBoard = usersBoard
 		}
 	}}
@@ -206,18 +200,16 @@
 
 <main>
 	<aside class="others">
-		{#each [...usersBoard.entries()] as [_, { username, board, scores, gameover }]}
-			{username}<br>
-			SCORE: {scores.score}
-			<div class="small board {gameover ? 'small-gameover' : ''}">
-				{#each board as row}
-					<div class="row">
-						{#each row as cell}
-							<div class="cell cell-{cell}"></div>
-						{/each}
-					</div>
-				{/each}
-			</div>
+		{#each [...usersBoard.entries()] as [_, { username, heights, scores, gameover }]}
+			<div>
+				{username}<br>
+				{scores.score}
+				<div class="small-board {gameover ? 'small-gameover' : ''}">
+					{#each heights as height}
+						<div style="height: {height / 20 * 100}%;"></div>
+					{/each}
+				</div>
+			</div>	
 		{/each}
 	</aside>
 	<div class="container">

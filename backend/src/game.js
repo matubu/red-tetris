@@ -23,13 +23,30 @@ function draw(currentShape, layer) {
 	return board
 }
 
-function	sendGameData(io, socket, board, scores) {
-	io.in(socket.room.name).emit(`gameInfo:${socket.room.name}`, {
+function	sendGameData(socket, board, scores) {
+	socket.emit(`gameInfo:${socket.room.name}`, {
 		clientId: socket.id, // his socket id to identify it in frontend
 		board, // contains the board of one player
-		username: socket.username, // his username
 		scores // contains score and lines
 	});
+}
+
+function	sendLayerData(io, socket, layer, scores) {
+	let heights = new Array(10).fill().map((_, x) => {
+		for (let y in layer)
+			if (layer[y][x] && layer[y][x] != 8)
+				return (+y)
+		return (20)
+	})
+
+	socket.in(socket.room.name).emit(
+		`gameInfo:${socket.room.name}`, {
+			clientId: socket.id,
+			heights,
+			username: socket.username,
+			scores
+		}
+	)
 }
 
 export function launchGame(io, socket) {
@@ -83,8 +100,10 @@ export function launchGame(io, socket) {
 				++lines;
 			}
 			layer = filterLayer
+
+			sendLayerData(io, socket, layer, { score, lines })
 		}
-		sendGameData(io, socket, board, {score, lines}, nextShape);
+		sendGameData(socket, board, { score, lines }, nextShape);
 	}, {
 		blackhole: 75,
 		sun: 150,
@@ -93,7 +112,7 @@ export function launchGame(io, socket) {
 	}[socket.room.gameMode])
 
 	const leaveRoom = () => {
-		console.log(socket.room.name, 'leaveRoom -> ', socket.id);
+		// console.log(socket.room.name, 'leaveRoom -> ', socket.id);
 		socket.removeAllListeners(`event:${socket.room.name}`)
 		clearInterval(interval)
 	}
@@ -122,6 +141,6 @@ export function launchGame(io, socket) {
 		else
 			return ;
 		board = draw(currentShape, layer);
-		sendGameData(io, socket, board, {score, lines}, nextShape)
+		sendGameData(socket, board, { score, lines }, nextShape)
 	})
 }
