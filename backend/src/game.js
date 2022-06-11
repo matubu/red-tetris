@@ -23,7 +23,12 @@ function draw(currentShape, layer) {
 	return board
 }
 
-export function launchGame(io, room, socket) {
+function	sendGameData(io, room, board, clientId) {
+	io.in(room.name).emit(`gameInfo:${room.name}`, {board, clientId});
+}
+
+export function launchGame(io, room, objRoom, socket) {
+	console.log('lauchGame objRoom =', objRoom);
 	let gameover = false
 	let currentShape;
 	let i = 0;
@@ -67,10 +72,9 @@ export function launchGame(io, room, socket) {
 			}
 			layer = filterLayer
 		}
-		io.in(room.name).emit(`gameInfo:${room.name}`, board);
+		sendGameData(io, room, board, socket.id)
 	}, 500)
 
-	console.log(socket);
 	socket.on('leaveRoom', () => {
 		console.log(`${room.name}`, 'leaveRoom -> ', socket.id);
 		clearInterval(interval)
@@ -101,6 +105,6 @@ export function launchGame(io, room, socket) {
 		else
 			return ;
 		board = draw(currentShape, layer);
-		io.in(room.name).emit(`gameInfo:${room.name}`, board);
+		sendGameData(io, room, board, socket.id)
 	})
 }

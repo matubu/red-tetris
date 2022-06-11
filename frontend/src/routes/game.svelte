@@ -6,7 +6,7 @@
 	import Room from "./room.svelte";
 
 	let roomname = ''
-
+	// let usersBoard = map('socket.id', 'board');
 	let gameover = false
 	let currentShape
 	let i = 0
@@ -59,18 +59,24 @@
 		}
 		socket.on('connect', initGame)
 		initGame()
-		socket.on(`gameInfo:${roomname}`, (board1) => {
-			if (board1 === 'gameover') {
+		socket.on(`gameInfo:${roomname}`, (data) => {
+			if (data === 'gameover') {
 				gameover = true;
 				return ;
 			}
-			console.log(board);
-			board = board1;
+			else {
+				console.log(`gameInfo:${roomname}| serverClientId =`, data.clientId
+				,'& frontClientId =', socket.id);
+				if (data.clientId === socket.id)
+					board = data.board;
+				else {
+
+				}
+			}
 		});
 
 		return () => {
 			socket.emit('leaveRoom')
-			// clearInterval(interval)
 		}
 	})
 </script>
@@ -172,25 +178,6 @@
 	on:keydown={e => {
 		console.log('emit key')
 		socket.emit(`event:${roomname}`, e.key);
-
-		// if (currentShape === undefined) return ;
-		// if (e.key == 'ArrowLeft')
-		// 	currentShape.move(layer, -1, 0)
-		// else if (e.key == 'ArrowRight')
-		// 	currentShape.move(layer, 1, 0)
-		// else if (e.key == 'ArrowUp')
-		// 	currentShape.rotateLeft(layer)
-		// else if (e.key == 'ArrowDown')
-		// {
-		// 	currentShape.move(layer, 0, 1)
-		// 	score += 1
-		// }
-		// else if (e.key == ' ')
-		// 	while (currentShape.move(layer, 0, 1))
-		// 		score += 2;
-		// else
-		// 	return ;
-		// board = draw(currentShape, layer);
 	}}
 />
 
