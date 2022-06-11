@@ -32,7 +32,7 @@ function	sendGameData(io, socket, board) {
 }
 
 export function launchGame(io, socket) {
-	console.log('lauchGame ', socket.username, socket.room);
+	// console.log('lauchGame ', socket.username, socket.room);
 
 	let gameover = false
 	let currentShape;
@@ -44,6 +44,7 @@ export function launchGame(io, socket) {
 	let level = 0;
 	let lines = 0;
 
+	console.log('setInterval')
 	let interval = setInterval(() => {
 		if (currentShape == undefined)
 		{
@@ -87,18 +88,18 @@ export function launchGame(io, socket) {
 		moon: 1000
 	}[socket.room.gameMode])
 
-	socket.on('leaveRoom', () => {
-		console.log(`${socket.room.name}`, 'leaveRoom -> ', socket.id);
+	const leaveRoom = () => {
+		console.log(socket.room.name, 'leaveRoom -> ', socket.id);
+		socket.removeAllListeners(`event:${socket.room.name}`)
 		clearInterval(interval)
-	})
-	socket.on('disconnect', () => {
-		console.log(`${socket.room.name}`, 'disconnect -> ', socket.id);
-		clearInterval(interval)
-	})
+	}
+
+	socket.once('leaveRoom', leaveRoom)
+	socket.once('disconnect', leaveRoom)
 	
 	// Apply event from user
 	socket.on(`event:${socket.room.name}`, (key) => {
-		console.log(`${socket.room.name}`, key);
+		// console.log(`${socket.room.name}`, key);
 		if (currentShape === undefined) return ;
 		if (key == 'ArrowLeft')
 			currentShape.move(layer, -1, 0)

@@ -30,6 +30,7 @@
 		initGame()
 
 		return () => {
+			console.log('leaveRoom')
 			socket.emit('leaveRoom')
 		}
 	})
@@ -156,6 +157,7 @@
 				board = data.board;
 		}
 		else {
+			console.log('debug ->', data.clientId,socket.id);
 			console.log('OthersBoards -> ', usersBoard);
 			if (data.gameover)
 				usersBoard.set(data.clientId, {

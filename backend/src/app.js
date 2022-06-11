@@ -25,7 +25,7 @@ io.on("connection", (socket) => {
 		if (roomname !== socket?.room?.name)
 		{
 			socket.emit(`notauthorized:${roomname}`)
-			console.log('notauthorized')
+			// console.log('notauthorized')
 			return ;
 		}
 		// Launch game loop
@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
 
 		socket.join(room.name);
 
-		console.log(rooms.get(room.name))
+		// console.log(rooms.get(room.name))
 
 		const sendUsersList = () => {
 			let users = [...(io.sockets.adapter.rooms?.get?.(room.name) ?? [])]
@@ -75,7 +75,7 @@ io.on("connection", (socket) => {
 		// Change game mode
 		socket.on(`gameMode:${room.name}`, (gameMode) => {
 			let newGameMode = gameMode ?? rooms.get(room.name).gameMode
-			console.log('newGameMode', newGameMode)
+			// console.log('newGameMode', newGameMode)
 			rooms.get(room.name).gameMode = newGameMode
 			io.in(room.name).emit(`gameMode:${room.name}`, newGameMode);
 		})
