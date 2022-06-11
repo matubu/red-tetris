@@ -67,12 +67,12 @@ class Game {
 		this.players.set(socket.id, new Player(socket))
 	}
 	getPlayerList() {
-		return this.players.values()
+		return [...this.players.values()]
 	}
-	removePlayer(id) {
+	removePlayer(socket) {
 		console.log('removePlayer', this);
-		socket.leave(currRoom.name)
-		this.players.delete(id)
+		socket.leave(this.name)
+		this.players.delete(socket.id)
 		this.sendUsersList()
 	}
 }
@@ -84,20 +84,15 @@ io.on("connection", (socket) => {
 	// Init game for user
 	socket.removeAllListeners('initgame')
 	socket.on('initgame', (roomname) => {
-		console.log('test authorized', socket.room, roomname)
-		if (roomname !== socket?.room?.name)
+		let currRoom = rooms.get(roomname);
+
+		if (currRoom == undefined || !currRoom.players.has(socket.id))
 		{
 			socket.emit(`notauthorized:${roomname}`)
-			// console.log('notauthorized')
 			return ;
 		}
-		// Launch game loop
-		console.log(socket.room, 'launchGame');
-		let currRoom = rooms.get(roomname);
-		if (currRoom) {
-			currRoom.started = true;
-			launchGame(io, socket);
-		}
+		currRoom.started = true;
+		launchGame(io, socket, currRoom);
 	})
 
 	socket.on('joinRoom', (room) => {
@@ -108,23 +103,20 @@ io.on("connection", (socket) => {
 			return ;
 		}
 
-		console.log('joinRoom', room)
-
 		// If your do not exists yet create it
 		if (!rooms.has(room.name))
 			rooms.set(room.name, new Game(room.name, 'earth'));
 	
 		// Check if game has already started
 		let currRoom = rooms.get(room.name);
-		if (currRoom.started == true) {
+		if (currRoom.started === true) {
 			socket.emit('gameHasStarted');
 			return ;
 		}
 
-		socket.username = currRoom.user;
+		socket.username = room.user;
 
 		currRoom.addPlayer(socket)
-		console.log('currRoom.players ->', currRoom.getPlayerList());
 
 		currRoom.sendUsersList()
 
@@ -142,8 +134,8 @@ io.on("connection", (socket) => {
 		})
 
 		// Disconnects
-		socket.on('leaveRoom', () => currRoom.removePlayer(socket.id))
-		socket.on('disconnect', () => currRoom.removePlayer(socket.id))
+		socket.on('leaveRoom', () => currRoom.removePlayer(socket))
+		socket.on('disconnect', () => currRoom.removePlayer(socket))
 	})
 
 });
