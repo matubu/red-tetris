@@ -2,6 +2,7 @@
 	import { user, socket } from "$lib/user";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
+	import Listener from '$lib/Listener.svelte';
 
 	let roomname = ''
 	// let usersBoard = map('socket.id', 'board');
@@ -15,41 +16,18 @@
 	let level = 0;
 	let lines = 0;
 
+	function initGame() {
+		console.log('initgame', roomname)
+		socket.emit('initgame', roomname)
+	}
+
 	onMount(() => {
 		if (!(roomname = location.hash.slice(1).toLowerCase()))
 			goto('/rooms')
 
-		socket.on(`gamedata:${roomname}`, (_users) => {
-			users = _users
-			console.log("list", users);
-		})
-		socket.on(`notauthorized:${roomname}`, () => {
-			console.log('notauthorized');
-			goto('/rooms')
-		})
 		console.log(`emit game: initgame`)
 
-		const initGame = () => {
-			console.log('initgame', roomname)
-			socket.emit('initgame', roomname)
-		}
-		socket.on('connect', initGame)
 		initGame()
-		socket.on(`gameInfo:${roomname}`, (data) => {
-			if (data === 'gameover') {
-				gameover = true;
-				return ;
-			}
-			else {
-				console.log(`gameInfo:${roomname}| serverClientId =`, data.clientId
-				,'& frontClientId =', socket.id);
-				if (data.clientId === socket.id)
-					board = data.board;
-				else {
-
-				}
-			}
-		});
 
 		return () => {
 			socket.emit('leaveRoom')
@@ -152,6 +130,36 @@
 
 <svelte:window
 	on:keydown={e => socket.emit(`event:${roomname}`, e.key)}
+/>
+
+<Listener
+	on="notauthorized:{roomname}"
+	handler={() => {
+		console.log('notauthorized');
+		goto('/rooms')
+	}}
+/>
+<Listener
+	on="connect"
+	handler={initGame}
+/>
+<Listener
+	on="gameInfo:{roomname}"
+	handler={(data) => {
+		if (data === 'gameover') {
+			gameover = true;
+			return ;
+		}
+		else {
+			console.log(`gameInfo:${roomname}| serverClientId =`, data.clientId
+			,'& frontClientId =', socket.id);
+			if (data.clientId === socket.id)
+				board = data.board;
+			else {
+
+			}
+		}
+	}}
 />
 
 <main>

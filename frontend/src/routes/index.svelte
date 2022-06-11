@@ -13,7 +13,7 @@
 </script>
 
 <main class="main">
-	<div>
+	<div id="logo">
 		<img width="340" alt="logo" src="/red-tetris-3d.png">
 	</div>
 	<form class="card" on:submit={e => {

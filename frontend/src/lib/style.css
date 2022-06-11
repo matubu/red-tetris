@@ -135,3 +135,7 @@ h2 { font-size: 47px }
 	border-color: var(--back-0) !important;
 	color: var(--back-0);
 }
+
+#logo {
+	cursor: pointer;
+}

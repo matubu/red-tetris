@@ -2,6 +2,7 @@
 	import { goto } from "$app/navigation";
 	import { onMount } from "svelte";
 	import { user, socket } from "$lib/user.js";
+	import Listener from "$lib/Listener.svelte";
 	import { browser } from "$app/env"
 
 	let roomname = ''
@@ -13,30 +14,16 @@
 		if (browser)
 			socket.emit(`gameMode:${roomname}`, gameMode)
 	}
+	function joinRoom() {
+		socket.emit('joinRoom', { name: roomname, user: $user });
+		syncGameMode(undefined)
+	}
 
 	onMount(() => {
 		if (!(roomname = location.hash.slice(1).toLowerCase()))
 			goto('/rooms')
-		if (browser) {
-			const joinRoom = () => {
-				socket.on(`join:${roomname}`, (_users) => {
-					users = _users
-					console.log("list", users);
-				})
-				socket.on(`start:${roomname}`, () => {
-					goto(`/game#${roomname}`)
-				})
-				socket.emit('joinRoom', { name: roomname, user: $user });
-				syncGameMode(undefined)
-			}
-
-			socket.on('connect', joinRoom)
+		if (browser)
 			joinRoom()
-
-			socket.on(`gameMode:${roomname}`, (_gameMode) => {
-				gameMode = _gameMode
-			})
-		}
 	})
 </script>
 
@@ -60,6 +47,30 @@
 		--shadow: var(--grey-border-0);
 	}
 </style>
+
+<Listener
+	on="join:{roomname}"
+	handler={(_users) => {
+		users = _users
+		console.log("list", users);
+	}}
+/>
+<Listener
+	on="start:{roomname}"
+	handler={() => {
+		goto(`/game#${roomname}`)
+	}}
+/>
+<Listener
+	on="connect"
+	handler={joinRoom}
+/>
+<Listener
+	on="gameMode:{roomname}"
+	handler={(_gameMode) => {
+		gameMode = _gameMode
+	}}
+/>
 
 <main class="main">
 	<div id="logo" on:click={() => {
