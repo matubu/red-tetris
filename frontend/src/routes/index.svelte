@@ -13,6 +13,13 @@
 	})
 </script>
 
+<style>
+	.title-card {
+		font-size: 1.9rem;
+		text-align: center;
+	}
+</style>
+
 <main class="main">
 	<div id="logo">
 		<img alt="logo" src="/red-tetris-3d.png">
@@ -23,9 +30,10 @@
 		user.set(userinput.getValue())
 		goto('/rooms')
 	}}>
+		<p class="title-card">username</p>
 		<Input
 			bind:this={userinput}
-			placeholder="Enter a username"
+			placeholder="Enter an username"
 			verify={value => {
 				if (!value.trim())
 					return ('Username required')

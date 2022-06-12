@@ -13,7 +13,20 @@ const io = new Server({
 
 let rooms = new Map();
 
+function sendRoomList(socket) {
+	let roomList = [];
+	rooms.forEach((val, key) => {
+		if (val.started === false)
+			roomList.push({name: key, nbPlayer: val.players.size});
+	})
+	socket.emit('roomList', roomList);
+}
+
 io.on("connection", (socket) => {
+
+	socket.on('getRoomList', () => {
+		sendRoomList(socket);
+	})
 
 	socket.on('initgame', (roomname) => {
 		let currRoom = rooms.get(roomname);
@@ -46,9 +59,11 @@ io.on("connection", (socket) => {
 			return ;
 		}
 
-		room.addPlayer(username, socket)
+		room.addPlayer(username, socket);
 
-		room.sendUsersList()
+		sendRoomList(io);
+
+		room.sendUsersList();
 
 		socket.on(`start:${roomname}`, () => {
 			io.in(roomname).emit(`start:${roomname}`);
@@ -64,15 +79,16 @@ io.on("connection", (socket) => {
 
 		// Disconnects
 		const removePlayer = () => {
-			room.removePlayer(socket)
+			room.removePlayer(socket);
 			if (room.players.size == 0)
 			{
 				room.destroy();
 				rooms.delete(roomname);
 			}
+			sendRoomList(io);
 		}
-		socket.on('leaveRoom', removePlayer)
-		socket.on('disconnect', removePlayer)
+		socket.on('leaveRoom', removePlayer);
+		socket.on('disconnect', removePlayer);
 
 	})
 
