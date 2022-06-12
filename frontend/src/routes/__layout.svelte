@@ -1,17 +1,20 @@
 <script>
 	import { user, connected } from '$lib/user.js'
-	import { goto } from "$app/navigation";
+	import { goto, afterNavigate } from "$app/navigation";
 	import { browser } from "$app/env";
 	import '$lib/style.css'
 
 	if (browser)
 	{
-		user.subscribe(username => {
+		function checkPage() {
 			if (location.pathname === '/')
 				return ;
-			if (username === undefined || username === '')
+			if ($user === undefined || $user === '')
 				goto('/');
-		})
+		}
+
+		afterNavigate(checkPage)
+		user.subscribe(checkPage)
 	}
 </script>
 
