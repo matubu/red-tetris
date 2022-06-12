@@ -19,8 +19,18 @@
 		shape: []
 	};
 
+	// Handle end game when playing multiplayer
+	let endPlayerList = [];
+	let isEndGame = false;
+
 	function initGame() {
 		socket.emit('initgame', roomname)
+	}
+
+	function endGame(playerList) {
+		console.log(playerList);
+		endPlayerList = playerList;
+		isEndGame = true;
 	}
 
 	onMount(() => {
@@ -173,6 +183,12 @@
 	on="connect"
 	handler={initGame}
 />
+
+<Listener
+	on="endgame:{roomname}"
+	handler={endGame}
+/>
+
 <Listener
 	on="gameInfo:{roomname}"
 	handler={(data) => {
