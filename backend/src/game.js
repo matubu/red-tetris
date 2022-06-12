@@ -1,5 +1,6 @@
 import { Sequence } from "./Sequence.js";
 import { Player } from "./Player.js";
+import { deleteRoom } from "./app.js";
 
 export class Game {
 	constructor(io, name, gameMode) {
@@ -25,7 +26,7 @@ export class Game {
 		return [...this.players.values()]
 	}
 	removePlayer(socket) {
-		console.log('removePlayer', this);
+		console.log('removePlayer');
 		socket.leave(this.name)
 		this.players.delete(socket.id)
 		this.sendUsersList()
@@ -37,13 +38,16 @@ export class Game {
 		for (let [_, player] of this.players)
 		{
 			player.socket.on(`event:${this.name}`, (key) => {
+				console.log('test')
 				player.applyEvent(key)
 			})
 
 			const leaveRoom = () => {
+				console.log('remove listeners')
 				player.socket.removeAllListeners(`event:${this.name}`)
 				player.socket.removeListener(`leaveRoom`, leaveRoom)
 				player.socket.removeListener(`disconnect`, leaveRoom)
+				this.removePlayer(player.socket)
 			}
 
 			player.socket.on('leaveRoom', leaveRoom)
@@ -56,6 +60,7 @@ export class Game {
 			{
 				clearInterval(interval);
 				this.started = false;
+				deleteRoom(this.name);
 			}
 
 			for (let [_, player] of this.players)

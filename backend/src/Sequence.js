@@ -1,4 +1,4 @@
-import { TETRIMINOS } from "./Shape.js";
+import { TETRIMINOS } from "./Piece.js";
 
 export class Sequence {
 	constructor() {

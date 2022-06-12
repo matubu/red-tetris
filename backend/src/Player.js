@@ -85,6 +85,7 @@ export class Player {
 			if (this.currShape.intersect(this.layer))
 			{
 				this.gameover = true;
+				this.currShape = undefined;
 				this.io.in(this.room.name).emit(`gameInfo:${this.room.name}`, {
 					clientId: this.socket.id,
 					gameover: true
@@ -117,7 +118,8 @@ export class Player {
 	}
 
 	applyEvent(key) {
-		if (this.currShape === undefined) return ;
+		if (this.currShape == undefined)
+			return ;
 
 		if (key == 'ArrowLeft')
 			this.currShape.move(this.layer, -1, 0)
@@ -135,6 +137,7 @@ export class Player {
 				this.score += 2;
 		else
 			return ;
+
 		this.board = draw(this.currShape, this.layer);
 		this.sendGameData()
 	}

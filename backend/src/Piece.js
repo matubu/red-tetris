@@ -1,4 +1,4 @@
-class Shape {
+class Piece {
 	constructor(colorid, shape) {
 		this.x = 5 - Math.ceil(shape.length / 2)
 		this.y = 0
@@ -6,7 +6,7 @@ class Shape {
 		this.shape = shape.map(row => [...row])
 	}
 	clone() {
-		let newShape = new Shape(this.colorid, this.shape);
+		let newShape = new Piece(this.colorid, this.shape);
 		newShape.x = this.x;
 		newShape.y = this.y;
 		return newShape;
@@ -90,7 +90,7 @@ class Tetriminos {
 		this.shape = shape
 	}
 	constructShape() {
-		return (new Shape(this.colorid, this.shape))
+		return (new Piece(this.colorid, this.shape))
 	}
 }
 
