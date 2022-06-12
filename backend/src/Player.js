@@ -1,3 +1,5 @@
+import { scoresDB } from './mongodb.js'
+
 function emptyBoard() {
 	let board = new Array(20)
 		.fill()
@@ -90,6 +92,10 @@ export class Player {
 					clientId: this.socket.id,
 					gameover: true
 				});
+				scoresDB.insertOne({
+					username: this.username,
+					score: this.score
+				})
 				return ;
 			}
 		}

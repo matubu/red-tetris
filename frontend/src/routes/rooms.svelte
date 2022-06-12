@@ -3,14 +3,18 @@
 	import Input from "$lib/Input.svelte";
 	import { onMount } from "svelte";
 	import Listener from "$lib/Listener.svelte"
-	import { socket } from "$lib/user.js";
+	import { user, socket } from "$lib/user.js";
 
 	let roominput
+
+	let userScores = []
+	let bestScores = []
 
 	let roomList = [] // (Name , Nb Users)
 
 	onMount(() => {
 		socket.emit('getRoomList');
+		socket.emit('getScoresList', $user);
 		roominput.focus();
 		roominput.setError(history.state.roomNameError);
 	})
@@ -44,6 +48,16 @@
 	handler={(_roomList) => {
 		roomList = _roomList;
 		console.log('roomList = ', roomList);
+	}}
+/>
+
+<Listener
+	on="scoresList"
+	handler={(scores) => {
+		userScores = scores.userScores;
+		bestScores = scores.bestScores;
+		console.log('scoresList = ',
+			userScores, bestScores);
 	}}
 />
 

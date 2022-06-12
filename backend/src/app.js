@@ -1,8 +1,6 @@
-// import { connect } from './mongodb.js'
 import { Server } from "socket.io";
 import { Game } from './Game.js';
-
-// let db = await connect()
+import { scoresDB } from './mongodb.js';
 
 const io = new Server({
 	cors: {
@@ -23,10 +21,23 @@ function sendRoomList(socket) {
 	socket.emit('roomList', roomList);
 }
 
+async function sendScores(socket, username) {
+	// Top 10 scores ever
+	const bestScores = await scoresDB.find({}, {projection: {"_id": false}}).limit(10).sort({ score: -1 }).toArray();
+	// Top 10 scores for an username
+	const userScores = await scoresDB.find({ username }, {projection: {"_id": false}}).limit(10).sort({ score: -1 }).toArray();
+
+	socket.emit('scoresList', {userScores, bestScores});
+}
+
 io.on("connection", (socket) => {
 
 	socket.on('getRoomList', () => {
 		sendRoomList(socket);
+	})
+
+	socket.on('getScoresList', (username) => {
+		sendScores(socket, username);
 	})
 
 	socket.on('initgame', (roomname) => {
