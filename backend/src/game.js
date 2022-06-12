@@ -13,15 +13,23 @@ export class Game {
 	}
 
 	sendUsersList() {
-		let users = this.getPlayerList().map(player => player.username);
-		console.log(users);
+		let users = this.getPlayerList()
+			.map(player => player.username
+				+ (player.socket.id === this.owner.socket.id ? ' (owner)' : ''));
 		this.io.in(this.name).emit(`join:${this.name}`, users);
+	}
+
+	setOwner(owner) {
+		this.owner = owner;
+		owner?.socket?.emit?.(`owner:${this.name}`);
 	}
 
 	addPlayer(username, socket) {
 		let newPlayer = new Player(this.io, username, socket, this);
+
 		if (this.players.size == 0)
-			this.owner = newPlayer;
+			this.setOwner(newPlayer);
+
 		socket.join(this.name);
 		this.players.set(socket.id, newPlayer)
 	}
@@ -29,11 +37,12 @@ export class Game {
 		return [...this.players.values()]
 	}
 	removePlayer(socket) {
-		console.log('removePlayer');
 		socket.leave(this.name)
 		this.players.delete(socket.id)
-		if (this.owner.socket.id === socket.id)
-			this.owner = this.players.values()?.[0];
+
+		if (this?.owner?.socket?.id === socket.id)
+			this.setOwner([...this.players.values()][0]);
+
 		this.sendUsersList()
 	}
 	destroy() {
@@ -51,7 +60,6 @@ export class Game {
 			})
 
 			const leaveRoom = () => {
-				console.log('remove listeners')
 				player.socket.removeAllListeners(`event:${this.name}`)
 				player.socket.removeListener(`leaveRoom`, leaveRoom)
 				player.socket.removeListener(`disconnect`, leaveRoom)

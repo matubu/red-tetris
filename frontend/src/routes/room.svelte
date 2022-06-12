@@ -7,6 +7,7 @@
 
 	let roomname = ''
 	let users = []
+	let owner = false
 
 	let gameMode = undefined
 
@@ -23,6 +24,10 @@
 		roomname = location.hash.slice(1).toLowerCase()
 		if (browser)
 			joinRoom()
+
+		return () => {
+			owner = false
+		}
 	})
 </script>
 
@@ -44,6 +49,12 @@
 		--back-1: var(--grey-back-1);
 		--border-1: var(--grey-border-1);
 		--shadow: var(--grey-border-0);
+	}
+
+	.disabled label {
+		transform: none !important;
+		box-shadow: 8px 8px var(--shadow) !important;
+		cursor: not-allowed;
 	}
 </style>
 
@@ -85,20 +96,25 @@
 		gameMode = _gameMode
 	}}
 />
+<Listener
+	on="owner:{roomname}"
+	handler={() => {
+		owner = true
+	}}
+/>
 
 <main class="main">
-	<div id="logo" on:click={() => {
+	<a id="logo" href="/" on:click={() => {
 		socket.emit('leaveRoom')
-		goto(`/`)
 	}}>
 		<img alt="logo" src="/red-tetris-3d.png">
-	</div>
+	</a>
 	<div class="card">
 		<h1>{roomname}</h1>
 		{#each users as user}
 		<p>- {user}</p>
 		{/each}
-		<div class="action">
+		<div class="action {owner ? '' : 'disabled'}">
 			<input type="radio" bind:group={gameMode} name="gameMode"
 				value="moon" id="moon"
 				on:change={() => syncGameMode(gameMode)} />
@@ -132,10 +148,15 @@
 					goto(`/rooms`)
 				}}
 			>LEAVE</button>
-			<button
-				class="red-button"
-				on:click={() => socket.emit(`start:${roomname}`)}
-			>START</button>
+			{#if owner}
+				<button
+					class="red-button"
+					on:click={() => socket.emit(`start:${roomname}`)}
+				>START</button>
+			{/if}
 		</div>
 	</div>
+	{#if !owner}
+		<p>Waiting for owner to start the game...</p>
+	{/if}
 </main>

@@ -21,9 +21,9 @@
 </style>
 
 <main class="main">
-	<div id="logo">
+	<a id="logo" href="/">
 		<img alt="logo" src="/red-tetris-3d.png">
-	</div>
+	</a>
 	<form class="card" on:submit={e => {
 		e.preventDefault() // Prevent page reload
 		if (!userinput.ok()) return ;

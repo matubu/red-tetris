@@ -15,10 +15,11 @@ let rooms = new Map();
 
 function sendRoomList(socket) {
 	let roomList = [];
-	rooms.forEach((val, key) => {
+
+	for (let [name, val] of rooms)
 		if (val.started === false)
-			roomList.push({name: key, nbPlayer: val.players.size});
-	})
+			roomList.push({ name, nbPlayer: val.players.size });
+
 	socket.emit('roomList', roomList);
 }
 
@@ -66,15 +67,21 @@ io.on("connection", (socket) => {
 		room.sendUsersList();
 
 		socket.on(`start:${roomname}`, () => {
+
+			if (room.owner?.socket?.id !== socket.id)
+				return ;
+
 			io.in(roomname).emit(`start:${roomname}`);
 			room.launch();
+
 		})
 
 		socket.on(`gameMode:${roomname}`, (gameMode) => {
 			let newGameMode = gameMode ?? room.gameMode
 
-			room.gameMode = newGameMode
-			io.in(roomname).emit(`gameMode:${roomname}`, newGameMode);
+			if (room.owner?.socket?.id === socket.id)
+				room.gameMode = newGameMode;
+			io.in(roomname).emit(`gameMode:${roomname}`, room.gameMode);
 		})
 
 		// Disconnects
@@ -84,6 +91,10 @@ io.on("connection", (socket) => {
 			{
 				room.destroy();
 				rooms.delete(roomname);
+				socket.removeAllListeners(`start:${roomname}`)
+				socket.removeAllListeners(`gameMode:${roomname}`)
+				socket.removeListener('leaveRoom', removePlayer)
+				socket.removeListener('disconnect', removePlayer)
 			}
 			sendRoomList(io);
 		}
