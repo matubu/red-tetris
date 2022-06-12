@@ -11,6 +11,7 @@ export class Game {
 		this.started = false;
 		this.players = new Map() // Array of Player
 		this.owner = undefined;
+		this.gameOverList = [];
 	}
 
 	sendUsersList() {
@@ -34,9 +35,11 @@ export class Game {
 		socket.join(this.name);
 		this.players.set(socket.id, newPlayer)
 	}
+
 	getPlayerList() {
 		return [...this.players.values()]
 	}
+
 	removePlayer(socket) {
 		socket.leave(this.name)
 		const currPlayer = this.players.get(socket.id);
@@ -45,7 +48,7 @@ export class Game {
 		if (this?.owner?.socket?.id === socket.id)
 			this.setOwner([...this.players.values()][0]);
 
-		if (this.started && currPlayer.score > 0) {
+		if (this.started && currPlayer?.score > 0) {
 			scoresDB.insertOne({
 				username: currPlayer.username,
 				score: currPlayer.score
@@ -53,13 +56,40 @@ export class Game {
 		}
 		this.sendUsersList()
 	}
+
 	destroy() {
 		clearInterval(this.interval);
 	}
 
+	handleEndGame() {
+		let nbPlayer = this.players.size;
+		let nbGameover = 0;
+		for (let [_, player] of this.players)
+			nbGameover += player.gameover ? 1 : 0;
+		
+		console.log('nbGameover->', nbGameover, 'nbPlayer->', nbPlayer);
+		if (nbGameover >= nbPlayer - 1) {
+
+			let list = [];
+			this.gameOverList.forEach((val) => {
+				console.log({username: val.username, score: val.score})
+				list.unshift({username: val.username, score: val.score});
+			});
+			this.players.forEach((val) => {
+				if (!val.gameover)
+					list.unshift({username: val.username, score: val.score})
+			});
+			this.io.in(this.name).emit(`endgame:${this.name}`, list);
+			this.destroy();
+			for (let [_, player] of this.players) {
+				player.socket.removeAllListeners(`event:${this.name}`);
+			}
+		}
+	}
+
 	launch() {
 		this.started = true;
-		let isSolo = this.players.size === 1;
+		this.isSolo = this.players.size === 1;
 
 		for (let [i, player] of this.players)
 		{
@@ -86,7 +116,9 @@ export class Game {
 		}
 
 		this.interval = setInterval(() => {
-
+			// Handle end game when the game is not solo
+			if (!this.isSolo)
+				this.handleEndGame();
 			for (let [_, player] of this.players)
 				player.tick()
 
