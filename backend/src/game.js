@@ -9,7 +9,7 @@ export class Game {
 		this.sequence = new Sequence();
 		this.started = false;
 		this.players = new Map() // Array of Player
-		// this.owner
+		this.owner = undefined;
 	}
 
 	sendUsersList() {
@@ -19,8 +19,11 @@ export class Game {
 	}
 
 	addPlayer(username, socket) {
+		let newPlayer = new Player(this.io, username, socket, this);
+		if (this.players.size == 0)
+			this.owner = newPlayer;
 		socket.join(this.name);
-		this.players.set(socket.id, new Player(this.io, username, socket, this))
+		this.players.set(socket.id, newPlayer)
 	}
 	getPlayerList() {
 		return [...this.players.values()]
@@ -29,6 +32,8 @@ export class Game {
 		console.log('removePlayer');
 		socket.leave(this.name)
 		this.players.delete(socket.id)
+		if (this.owner.socket.id === socket.id)
+			this.owner = this.players.values()?.[0];
 		this.sendUsersList()
 	}
 	destroy() {
@@ -37,6 +42,7 @@ export class Game {
 
 	launch() {
 		this.started = true;
+		let isSolo = this.players.size === 1;
 
 		for (let [_, player] of this.players)
 		{
