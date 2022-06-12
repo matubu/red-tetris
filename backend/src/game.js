@@ -1,6 +1,5 @@
 import { Sequence } from "./Sequence.js";
 import { Player } from "./Player.js";
-import { deleteRoom } from "./app.js";
 
 export class Game {
 	constructor(io, name, gameMode) {
@@ -10,6 +9,7 @@ export class Game {
 		this.sequence = new Sequence();
 		this.started = false;
 		this.players = new Map() // Array of Player
+		// this.owner
 	}
 
 	sendUsersList() {
@@ -31,6 +31,9 @@ export class Game {
 		this.players.delete(socket.id)
 		this.sendUsersList()
 	}
+	destroy() {
+		clearInterval(this.interval);
+	}
 
 	launch() {
 		this.started = true;
@@ -38,7 +41,6 @@ export class Game {
 		for (let [_, player] of this.players)
 		{
 			player.socket.on(`event:${this.name}`, (key) => {
-				console.log('test')
 				player.applyEvent(key)
 			})
 
@@ -47,21 +49,13 @@ export class Game {
 				player.socket.removeAllListeners(`event:${this.name}`)
 				player.socket.removeListener(`leaveRoom`, leaveRoom)
 				player.socket.removeListener(`disconnect`, leaveRoom)
-				this.removePlayer(player.socket)
 			}
 
 			player.socket.on('leaveRoom', leaveRoom)
 			player.socket.on('disconnect', leaveRoom)
 		}
 
-		let interval = setInterval(() => {
-
-			if (this.players.size == 0)
-			{
-				clearInterval(interval);
-				this.started = false;
-				deleteRoom(this.name);
-			}
+		this.interval = setInterval(() => {
 
 			for (let [_, player] of this.players)
 				player.tick()

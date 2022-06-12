@@ -13,10 +13,6 @@ const io = new Server({
 
 let rooms = new Map();
 
-export function deleteRoom(roomName) {
-	rooms.delete(roomName);
-}
-
 io.on("connection", (socket) => {
 
 	socket.on('initgame', (roomname) => {
@@ -59,8 +55,16 @@ io.on("connection", (socket) => {
 		})
 
 		// Disconnects
-		// socket.on('leaveRoom', () => room.removePlayer(socket))
-		// socket.on('disconnect', () => room.removePlayer(socket))
+		const removePlayer = () => {
+			room.removePlayer(socket)
+			if (room.players.size == 0)
+			{
+				room.destroy();
+				rooms.delete(roomname);
+			}
+		}
+		socket.on('leaveRoom', removePlayer)
+		socket.on('disconnect', removePlayer)
 
 	})
 
