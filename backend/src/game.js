@@ -53,16 +53,24 @@ export class Game {
 		this.started = true;
 		let isSolo = this.players.size === 1;
 
-		for (let [_, player] of this.players)
+		for (let [i, player] of this.players)
 		{
 			player.socket.on(`event:${this.name}`, (key) => {
 				player.applyEvent(key)
 			})
 
+			const sendLayerData = () => {
+				for (let [j, other] of this.players)
+					if (i != j)
+						other.sendLayerData(player.socket)
+			}
+			player.socket.once('initgame', sendLayerData);
+
 			const leaveRoom = () => {
 				player.socket.removeAllListeners(`event:${this.name}`)
 				player.socket.removeListener(`leaveRoom`, leaveRoom)
 				player.socket.removeListener(`disconnect`, leaveRoom)
+				player.socket.removeListener(`initgame`, sendLayerData)
 			}
 
 			player.socket.on('leaveRoom', leaveRoom)

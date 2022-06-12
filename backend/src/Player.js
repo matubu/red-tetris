@@ -55,7 +55,7 @@ export class Player {
 		});
 	}
 
-	sendLayerData() {
+	sendLayerData(socket) {
 		let heights = new Array(10).fill().map((_, x) => {
 			for (let y in this.layer)
 				if (this.layer[y][x] && this.layer[y][x] != 8)
@@ -63,7 +63,7 @@ export class Player {
 			return (20)
 		})
 
-		this.socket.in(this.room.name).emit(
+		socket.emit(
 			`gameInfo:${this.room.name}`, {
 				clientId: this.socket.id,
 				heights,
@@ -118,7 +118,7 @@ export class Player {
 			}
 			this.layer = filteredLayer
 
-			this.sendLayerData()
+			this.sendLayerData(this.socket.in(this.room.name))
 		}
 		this.sendGameData();
 	}
