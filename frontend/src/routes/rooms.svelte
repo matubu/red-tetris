@@ -19,7 +19,7 @@
 		on:submit={e => {
 			e.preventDefault()
 			if (!roominput.ok()) return ;
-			goto(`/room#${roominput.getValue()}`)
+			goto(`/room#${roominput.getValue().toLowerCase()}`)
 		}}
 	>
 		<Input

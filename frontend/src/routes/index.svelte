@@ -7,8 +7,9 @@
 	let userinput
 
 	onMount(() => {
-		userinput.setValue($user)
 		userinput.focus()
+		userinput.setValue($user)
+		userinput.setError(history.state.userNameError)
 	})
 </script>
 

@@ -25,7 +25,15 @@ io.on("connection", (socket) => {
 	socket.on('joinRoom', ({ user: username, name: roomname }) => {
 
 		if (username === undefined || username === '')
+		{
+			socket.emit('userNameError', `username required`);
 			return ;
+		}
+		if (!/^[a-z0-9_-]{1,16}$/.test(roomname))
+		{
+			socket.emit('roomNameError', `invalid roomname`);
+			return ;
+		}
 
 		if (!rooms.has(roomname))
 			rooms.set(roomname, new Game(io, roomname, 'earth'));
@@ -34,7 +42,7 @@ io.on("connection", (socket) => {
 
 		if (room.started === true)
 		{
-			socket.emit('gameHasStarted');
+			socket.emit('roomNameError', `${roomname} has already started`);
 			return ;
 		}
 

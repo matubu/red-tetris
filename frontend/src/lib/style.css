@@ -1,14 +1,6 @@
-/* @font-face {
-	font-family: 'Pluto';
-	src: url('PlutoRegular.woff') format('woff');
-} */
-/* @font-face {
-	font-family: 'Pixelised';
-	src: url('Pixelised.TTF');
-} */
 @font-face {
 	font-family: "redtetris";
-	src: url("redtetris.ttf");
+	src: url("/redtetris.ttf");
 }
 
 :root {

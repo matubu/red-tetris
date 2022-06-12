@@ -20,8 +20,7 @@
 	}
 
 	onMount(() => {
-		if (!(roomname = location.hash.slice(1).toLowerCase()))
-			goto('/rooms')
+		roomname = location.hash.slice(1).toLowerCase()
 		if (browser)
 			joinRoom()
 	})
@@ -49,10 +48,18 @@
 </style>
 
 <Listener
-	on="gameHasStarted"
-	handler={() => {
+	on="roomNameError"
+	handler={roomNameError => {
 		goto('/rooms',
-			{ state: { roomNameError: `${roomname} has already started` } });
+			{ state: { roomNameError } });
+		return ;
+	}}
+/>
+<Listener
+	on="userNameError"
+	handler={userNameError => {
+		goto('/',
+			{ state: { userNameError } });
 		return ;
 	}}
 />
