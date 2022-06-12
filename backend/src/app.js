@@ -49,12 +49,12 @@ io.on("connection", (socket) => {
 
 	socket.on('joinRoom', ({ user: username, name: roomname }) => {
 
-		if (!/^[a-z0-9_-]{1,16}$/.test(username) || username === undefined)
+		if (!/^[a-z0-9_-]{1,16}$/i.test(username) || username === undefined)
 		{
 			socket.emit('userNameError', `username required`);
 			return ;
 		}
-		if (!/^[a-z0-9_-]{1,16}$/.test(roomname))
+		if (!/^[a-z0-9_-]{1,16}$/i.test(roomname))
 		{
 			socket.emit('roomNameError', `invalid roomname`);
 			return ;

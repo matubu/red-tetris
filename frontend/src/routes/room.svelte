@@ -112,7 +112,7 @@
 	<div class="card">
 		<h1>{roomname}</h1>
 		{#each users as user}
-		<p>- {user}</p>
+		<div>- {user}</div>
 		{/each}
 		<div class="action {owner ? '' : 'disabled'}">
 			<input type="radio" bind:group={gameMode} name="gameMode"

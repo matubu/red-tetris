@@ -37,9 +37,20 @@
 	.room-number {
 		font-size: 1.3rem;
 	}
-	.title-card {
-		font-size: 1.9rem;
-		text-align: center;
+	.score {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.vflex, .hflex {
+		display: flex;
+		gap: 40px;
+	}
+	.vflex {
+		flex-direction: column;
+	}
+	.scores {
+		max-width: 350px;
 	}
 </style>
 
@@ -47,7 +58,6 @@
 	on="roomList"
 	handler={(_roomList) => {
 		roomList = _roomList;
-		console.log('roomList = ', roomList);
 	}}
 />
 
@@ -56,8 +66,6 @@
 	handler={(scores) => {
 		userScores = scores.userScores;
 		bestScores = scores.bestScores;
-		console.log('scoresList = ',
-			userScores, bestScores);
 	}}
 />
 
@@ -65,46 +73,73 @@
 	<a id="logo" href="/">
 		<img alt="logo" src="/red-tetris-3d.png">
 	</a>
-	<form class="card" 
-		
-		on:submit={e => {
-			e.preventDefault()
-			if (!roominput.ok()) return ;
-			goto(`/room#${roominput.getValue().toLowerCase()}`)
-		}}
-	>
-		<p class="title-card">Create / Join room</p>
-		<Input
-			bind:this={roominput}
-			placeholder="Enter a roomname"
-			verify={value => {
-				if (!value)
-					return ('Roomname required')
-				if (!/^[a-z0-9_-]*$/i.test(value))
-					return ('Roomname should only contains [a-z][0-9]_-')
-			}}
-			maxlength="16"
-		/>
-		<button class="red-button">JOIN</button>
-	</form>
-	<div class="card">
-		<p class="title-card">Room List</p>
-		{#if roomList.length}
-			<!-- <div class="room-card">
-				<p class="text-card">name:</p>
-				<p class="text-card">number:</p>
-			</div> -->
-			{#each roomList as room}
-				<div class="room-card">
-					<p class="room-list-title">{room.name}</p>
-					<p class="room-number">{room.nbPlayer}</p>
-					<button class="red-button room-button" on:click={goto(`/room#${room.name}`)}>
-						join
-					</button>
-				</div>
-			{/each}
-		{:else}
-			<p style="text-align:center;">Currently no room available</p>
-		{/if}
+	<div class="hflex">
+		<div class="card scores">
+			<h2>User scores</h2>
+			{#if userScores.length}
+				{#each userScores as score}	
+					<div class="score">
+						<span>{score.username}</span>
+						<span>{score.score}</span>
+					</div>
+				{/each}
+			{:else}
+				<p style="text-align:center">No game yet</p>
+			{/if}
+		</div>
+		<div class="vflex">
+			<form class="card" 
+				
+				on:submit={e => {
+					e.preventDefault()
+					if (!roominput.ok()) return ;
+					goto(`/room#${roominput.getValue().toLowerCase()}`)
+				}}
+			>
+				<h2>Create / Join room</h2>
+				<Input
+					bind:this={roominput}
+					placeholder="Enter a roomname"
+					verify={value => {
+						if (!value)
+							return ('Roomname required')
+						if (!/^[a-z0-9_-]*$/i.test(value))
+							return ('Roomname should only contains [a-z][0-9]_-')
+					}}
+					maxlength="16"
+				/>
+				<button class="red-button">JOIN</button>
+			</form>
+
+			<div class="card">
+				<h2>Room List</h2>
+				{#if roomList.length}
+					{#each roomList as room}
+						<div class="room-card">
+							<p class="room-list-title">{room.name}</p>
+							<p class="room-number">{room.nbPlayer}</p>
+							<button class="red-button room-button" on:click={goto(`/room#${room.name}`)}>
+								join
+							</button>
+						</div>
+					{/each}
+				{:else}
+					<p>Currently no room available</p>
+				{/if}
+			</div>
+		</div>
+		<div class="card scores">
+			<h2>Bests scores</h2>
+			{#if bestScores.length}
+				{#each bestScores as score}	
+					<div class="score">
+						<span>{score.username}</span>
+						<span>{score.score}</span>
+					</div>
+				{/each}
+			{:else}
+				<p style="text-align:center">No game yet</p>
+			{/if}
+		</div>
 	</div>
 </main>

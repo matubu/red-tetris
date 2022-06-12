@@ -13,13 +13,6 @@
 	})
 </script>
 
-<style>
-	.title-card {
-		font-size: 1.9rem;
-		text-align: center;
-	}
-</style>
-
 <main class="main">
 	<a id="logo" href="/">
 		<img alt="logo" src="/red-tetris-3d.png">
@@ -30,7 +23,7 @@
 		user.set(userinput.getValue())
 		goto('/rooms')
 	}}>
-		<p class="title-card">username</p>
+		<h2>username</h2>
 		<Input
 			bind:this={userinput}
 			placeholder="Enter an username"
