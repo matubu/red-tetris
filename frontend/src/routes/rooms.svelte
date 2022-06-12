@@ -4,9 +4,10 @@
 	import { onMount } from "svelte";
 
 	let roominput
-
+	
 	onMount(() => {
 		roominput.focus()
+		roominput.setError(history.state.roomNameError)
 	})
 </script>
 

@@ -51,8 +51,8 @@
 <Listener
 	on="gameHasStarted"
 	handler={() => {
-		console.log("game has already started");
-		goto('/rooms');
+		goto('/rooms',
+			{ state: { roomNameError: `${roomname} has already started` } });
 		return ;
 	}}
 />

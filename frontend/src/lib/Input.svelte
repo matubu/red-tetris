@@ -21,6 +21,9 @@
 		], { duration: 400 })
 		return (false)
 	}
+	export function setError(_error) {
+		error = _error
+	}
 	export function getValue() {
 		return (value)
 	}
