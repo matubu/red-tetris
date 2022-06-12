@@ -1,5 +1,3 @@
-import { scoresDB } from './mongodb.js'
-
 function emptyBoard() {
 	let board = new Array(20)
 		.fill()
@@ -43,7 +41,7 @@ export class Player {
 	}
 
 	sendGameData() {
-		//let nextShape = this.sequence.get(this.currShapeIdx);
+		let nextShape = this.sequence.get(this.currShapeIdx);
 
 		this.socket.emit(`gameInfo:${this.room.name}`, {
 			clientId: this.socket.id,
@@ -51,7 +49,8 @@ export class Player {
 			scores: {
 				score: this.score,
 				lines: this.lines
-			}
+			},
+			nextShape
 		});
 	}
 
@@ -92,10 +91,6 @@ export class Player {
 					clientId: this.socket.id,
 					gameover: true
 				});
-				scoresDB.insertOne({
-					username: this.username,
-					score: this.score
-				})
 				return ;
 			}
 		}

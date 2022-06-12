@@ -1,5 +1,6 @@
 import { Sequence } from "./Sequence.js";
 import { Player } from "./Player.js";
+import { scoresDB } from './mongodb.js'
 
 export class Game {
 	constructor(io, name, gameMode) {
@@ -38,11 +39,18 @@ export class Game {
 	}
 	removePlayer(socket) {
 		socket.leave(this.name)
+		const currPlayer = this.players.get(socket.id);
 		this.players.delete(socket.id)
 
 		if (this?.owner?.socket?.id === socket.id)
 			this.setOwner([...this.players.values()][0]);
 
+		if (this.started && currPlayer.score > 0) {
+			scoresDB.insertOne({
+				username: currPlayer.username,
+				score: currPlayer.score
+			})
+		}
 		this.sendUsersList()
 	}
 	destroy() {
