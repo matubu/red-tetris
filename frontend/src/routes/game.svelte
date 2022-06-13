@@ -323,7 +323,7 @@
 			>LEAVE</button>
 		{/if}
 	</aside>
-	{#if isEndGame}
+	{#if isEndGame || (endPlayerList.length === 0 && gameover)}
 		<div class="card card-endgame">
 			<h2>Scores</h2>
 			<div class="score-div">
