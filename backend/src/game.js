@@ -17,22 +17,27 @@ export class Game {
 	sendUsersList() {
 		let users = this.getPlayerList()
 			.map(player => player.username
-				+ (player.socket.id === this.owner.socket.id ? ' (owner)' : ''));
+				+ (player.socket.id === this.owner?.socket?.id ? ' (owner)' : ''));
 		this.io.in(this.name).emit(`join:${this.name}`, users);
 	}
 
 	setOwner(owner) {
 		this.owner = owner;
 		owner?.socket?.emit?.(`owner:${this.name}`);
+		console.log(`owner:${this.owner?.username}`, this.players);
 	}
 
 	addPlayer(username, socket) {
+		if (this.players.has(socket.id))
+			return ;
+
 		let newPlayer = new Player(this.io, username, socket, this);
 
-		if (this.players.size == 0)
+		if (this.players.size == 0 && this.owner === undefined)
 			this.setOwner(newPlayer);
-
+		
 		socket.join(this.name);
+
 		this.players.set(socket.id, newPlayer)
 	}
 
@@ -79,7 +84,11 @@ export class Game {
 				if (!val.gameover)
 					list.unshift({username: val.username, score: val.score})
 			});
+			// Send info to know who is the owner when game is ended
+			this.owner?.socket?.emit?.(`owner:${this.name}`);
+			// Send endgame signal to everyone in the room
 			this.io.in(this.name).emit(`endgame:${this.name}`, list);
+			// Stop the setInterval of the game and delete the listeners 'event'
 			this.destroy();
 			for (let [_, player] of this.players) {
 				player.socket.removeAllListeners(`event:${this.name}`);

@@ -15,6 +15,8 @@
 	let score = 0;
 	let lines = 0;
 
+	let owner = false;
+
 	let nextShape = {
 		shape: []
 	};
@@ -38,7 +40,7 @@
 			goto('/rooms')
 
 		initGame()
-
+		
 		return () => {
 			socket.emit('leaveRoom')
 		}
@@ -76,6 +78,10 @@
 	.row {
 		display: flex;
 		gap: 4px;
+	}
+	.score-div {
+		display: flex;
+		justify-content: space-between;
 	}
 	.cell {
 		flex: 1;
@@ -166,6 +172,29 @@
 	.next-piece {
 		width: 4rem;
 	}
+
+	@keyframes endgame-anim {
+		0% {
+			transform: translate(-50%, -50%) scale(0);
+			opacity: 0;
+		}
+		75% {
+			transform: translate(-50%, -50%) scale(1.1);
+		}
+		to {
+			transform: translate(-50%, -50%) scale(1);
+			opacity: 1;
+		}
+	}
+	.card-endgame {
+		box-shadow: 0 0 50px -15px var(--grey-back-0);
+		position: fixed; /* Stay in place */
+		z-index: 9999; /* Place in front of other elements */
+		overflow: auto; /* Enable scroll */
+		top: 50%;
+		left: 50%;
+		animation: 0.5s endgame-anim cubic-bezier(0.42, 0, 0.21, 1.4) forwards;
+	}
 </style>
 
 <svelte:window
@@ -180,6 +209,12 @@
 	}}
 />
 <Listener
+	on="owner:{roomname}"
+	handler={() => {
+		owner = true
+	}}
+/>
+<Listener
 	on="connect"
 	handler={initGame}
 />
@@ -187,6 +222,14 @@
 <Listener
 	on="endgame:{roomname}"
 	handler={endGame}
+/>
+
+<Listener
+	on="restart:{roomname}"
+	handler={() => {
+		socket.emit(`leaveRoom`);
+		goto(`/room#${roomname}`);
+	}}
 />
 
 <Listener
@@ -280,9 +323,42 @@
 			</div>
 		</div>
 
-		<button
-			class="red-button"
-			on:click={() => goto(`/rooms`)}
-		>LEAVE</button>
+		{#if !isEndGame}
+			<button
+				class="red-button"
+				on:click={() => goto(`/rooms`)}
+			>LEAVE</button>
+		{/if}
 	</aside>
+	{#if isEndGame}
+		<div class="card card-endgame">
+			<h2>Scores</h2>
+			<div class="score-div">
+				<p>Top</p>
+				<p>Name</p>
+				<p>score</p>
+			</div>
+			{#each endPlayerList as player, i}
+				<div class="score-div">
+					<p>{i + 1}</p>
+					<p>{player.username}</p>
+					<p>{player.score}</p>
+				</div>
+				<hr/>
+			{/each}
+			{#if owner}
+				<button
+				class="red-button"
+				on:click={() => {
+					socket.emit(`restart:${roomname}`);
+				}}
+			>RESTART</button>
+			{/if}
+			<button
+				class="red-button"
+				on:click={() => goto(`/rooms`)}
+			>LEAVE</button>
+		</div>
+	{/if}
+
 </main>

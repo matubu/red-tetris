@@ -85,7 +85,36 @@ io.on("connection", (socket) => {
 			io.in(roomname).emit(`start:${roomname}`);
 			room.launch();
 
-		})
+		});
+
+		socket.on(`restart:${roomname}`, () => {
+			let currRoom = rooms.get(roomname);
+			if (currRoom.owner?.socket?.id !== socket.id)
+				return ;
+			io.in(roomname).emit(`restart:${roomname}`);
+
+			// for (let [_, player] of room.players) {
+			// 	room.removePlayer(player.socket);
+			// }
+
+			// for (let [_, player] of room.players) {
+			// 	player.socket.removeAllListeners(`start:${roomname}`);
+			// 	player.socket.removeAllListeners(`gameMode:${roomname}`);
+			// 	player.socket.removeAllListeners('leaveRoom');
+			// 	player.socket.removeAllListeners('disconnect');
+			// }
+			currRoom.started = false;
+			// for (let [_, player] of currRoom.players)
+			// {
+			// 	currRoom.removePlayer(player.socket);
+			// 	// player.socket.disconnect();
+			// }
+			// delete rooms.get(roomname);
+			// rooms.delete(roomname);
+			// rooms.set(roomname, new Game(io, roomname, 'earth'));
+			// room = rooms.get(roomname);
+			// room.addPlayer(username, socket);
+		});
 
 		socket.on(`gameMode:${roomname}`, (gameMode) => {
 			let newGameMode = gameMode ?? room.gameMode
@@ -102,10 +131,10 @@ io.on("connection", (socket) => {
 			{
 				room.destroy();
 				rooms.delete(roomname);
-				socket.removeAllListeners(`start:${roomname}`)
-				socket.removeAllListeners(`gameMode:${roomname}`)
-				socket.removeListener('leaveRoom', removePlayer)
-				socket.removeListener('disconnect', removePlayer)
+				socket.removeAllListeners(`start:${roomname}`);
+				socket.removeAllListeners(`gameMode:${roomname}`);
+				socket.removeListener('leaveRoom', removePlayer);
+				socket.removeListener('disconnect', removePlayer);
 			}
 			sendRoomList(io);
 		}
