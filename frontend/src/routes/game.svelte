@@ -40,10 +40,6 @@
 			goto('/rooms')
 
 		initGame()
-		
-		return () => {
-			socket.emit('leaveRoom')
-		}
 	})
 </script>
 
@@ -87,7 +83,7 @@
 		flex: 1;
 		aspect-ratio: 1/1;
 		border-radius: 7%;
-		transition: .1s;
+		transition: .04s;
 		background: var(--color);
 		--shadow-color: #0d0d1716;
 		--shadow: inset 0 0 0 5px var(--shadow-color), inset -5px -5px var(--shadow-color);
@@ -203,10 +199,7 @@
 
 <Listener
 	on="notauthorized:{roomname}"
-	handler={() => {
-		// console.log('notauthorized');
-		goto('/rooms')
-	}}
+	handler={() => goto('/rooms')}
 />
 <Listener
 	on="owner:{roomname}"
@@ -226,10 +219,7 @@
 
 <Listener
 	on="restart:{roomname}"
-	handler={() => {
-		socket.emit(`leaveRoom`);
-		goto(`/room#${roomname}`);
-	}}
+	handler={() => goto(`/room#${roomname}`)}
 />
 
 <Listener
@@ -326,7 +316,10 @@
 		{#if !isEndGame}
 			<button
 				class="red-button"
-				on:click={() => goto(`/rooms`)}
+				on:click={() => {
+					socket.emit('leaveRoom')
+					goto(`/rooms`)
+				}}
 			>LEAVE</button>
 		{/if}
 	</aside>
@@ -356,7 +349,10 @@
 			{/if}
 			<button
 				class="red-button"
-				on:click={() => goto(`/rooms`)}
+				on:click={() => {
+					socket.emit('leaveRoom')
+					goto(`/rooms`)
+				}}
 			>LEAVE</button>
 		</div>
 	{/if}

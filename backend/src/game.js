@@ -17,48 +17,50 @@ export class Game {
 	sendUsersList() {
 		let users = this.getPlayerList()
 			.map(player => player.username
-				+ (player.socket.id === this.owner?.socket?.id ? ' (owner)' : ''));
+				+ (player.client.id === this.owner?.client?.id ? ' (owner)' : ''));
 		this.io.in(this.name).emit(`join:${this.name}`, users);
 	}
 
 	setOwner(owner) {
 		this.owner = owner;
-		owner?.socket?.emit?.(`owner:${this.name}`);
-		console.log(`owner:${this.owner?.username}`, this.players);
+		owner?.client?.emit?.(`owner:${this.name}`);
+		console.log(`setowner ${this.owner?.username}`);
 	}
 
-	addPlayer(username, socket) {
-		if (this.players.has(socket.id))
-			return ;
+	addPlayer(username, client) {
+		console.log('addPlayer', username, this.owner?.username)
 
-		let newPlayer = new Player(this.io, username, socket, this);
+		let newPlayer = new Player(this.io, username, client, this);
 
-		if (this.players.size == 0 && this.owner === undefined)
+		client.join(this.name);
+
+		if (this.players.size == 0 || this.owner?.client.id === client.id)
 			this.setOwner(newPlayer);
-		
-		socket.join(this.name);
 
-		this.players.set(socket.id, newPlayer)
+		this.players.get(client.id)?.destroy?.();
+		this.players.set(client.id, newPlayer)
 	}
 
 	getPlayerList() {
 		return [...this.players.values()]
 	}
 
-	removePlayer(socket) {
-		socket.leave(this.name)
-		const currPlayer = this.players.get(socket.id);
-		this.players.delete(socket.id)
+	removePlayer(client) {
+		client.destroy();
 
-		if (this?.owner?.socket?.id === socket.id)
+		const currPlayer = this.players.get(client.id);
+		
+		this.players.delete(client.id)
+
+		if (this?.owner?.client?.id === client.id)
 			this.setOwner([...this.players.values()][0]);
 
-		if (this.started && currPlayer?.score > 0) {
+		if (this.started && currPlayer?.score > 0)
 			scoresDB.insertOne({
 				username: currPlayer.username,
 				score: currPlayer.score
 			})
-		}
+
 		this.sendUsersList()
 	}
 
@@ -74,7 +76,10 @@ export class Game {
 		
 		console.log('nbGameover->', nbGameover, 'nbPlayer->', nbPlayer);
 		if (nbGameover >= nbPlayer - 1) {
-
+			// Stop the setInterval of the game and delete the listeners 'event'
+			this.destroy();
+			for (let [_, player] of this.players)
+				player.client.removeAllListeners(`event:${this.name}`);
 			let list = [];
 			this.gameOverList.forEach((val) => {
 				console.log({username: val.username, score: val.score})
@@ -85,14 +90,13 @@ export class Game {
 					list.unshift({username: val.username, score: val.score})
 			});
 			// Send info to know who is the owner when game is ended
-			this.owner?.socket?.emit?.(`owner:${this.name}`);
+			console.log('->> sendOwner', this.owner?.username)
+			this.owner?.client?.emit?.(`owner:${this.name}`);
+			
 			// Send endgame signal to everyone in the room
 			this.io.in(this.name).emit(`endgame:${this.name}`, list);
-			// Stop the setInterval of the game and delete the listeners 'event'
-			this.destroy();
-			for (let [_, player] of this.players) {
-				player.socket.removeAllListeners(`event:${this.name}`);
-			}
+			
+			
 		}
 	}
 
@@ -102,26 +106,16 @@ export class Game {
 
 		for (let [i, player] of this.players)
 		{
-			player.socket.on(`event:${this.name}`, (key) => {
+			player.client.on(`event:${this.name}`, (key) => {
 				player.applyEvent(key)
 			})
 
 			const sendLayerData = () => {
 				for (let [j, other] of this.players)
 					if (i != j)
-						other.sendLayerData(player.socket)
+						other.sendLayerData(player.client)
 			}
-			player.socket.once('initgame', sendLayerData);
-
-			const leaveRoom = () => {
-				player.socket.removeAllListeners(`event:${this.name}`)
-				player.socket.removeListener(`leaveRoom`, leaveRoom)
-				player.socket.removeListener(`disconnect`, leaveRoom)
-				player.socket.removeListener(`initgame`, sendLayerData)
-			}
-
-			player.socket.on('leaveRoom', leaveRoom)
-			player.socket.on('disconnect', leaveRoom)
+			player.client.on('initgame', sendLayerData);
 		}
 
 		this.interval = setInterval(() => {

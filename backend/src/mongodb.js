@@ -9,7 +9,6 @@ const client = new MongoClient(uri, {
 });
 
 async function connect() {
-	console.log('Mongo connect')
 	return new Promise(resolve => {
 		client.connect(err => {
 			const db = client.db("red-tetris");

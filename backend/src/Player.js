@@ -23,9 +23,9 @@ function draw(currentShape, layer) {
 }
 
 export class Player {
-	constructor(io, username, socket, room) {
+	constructor(io, username, client, room) {
 		this.io = io;
-		this.socket = socket;
+		this.client = client;
 		this.username = username;
 		this.room = room;
 		this.sequence = room.sequence;
@@ -43,8 +43,8 @@ export class Player {
 	sendGameData() {
 		let nextShape = this.sequence.get(this.currShapeIdx);
 
-		this.socket.emit(`gameInfo:${this.room.name}`, {
-			clientId: this.socket.id,
+		this.client.emit(`gameInfo:${this.room.name}`, {
+			clientId: this.client.id,
 			board: this.board,
 			scores: {
 				score: this.score,
@@ -55,7 +55,7 @@ export class Player {
 		});
 	}
 
-	sendLayerData(socket) {
+	sendLayerData(client) {
 		let heights = new Array(10).fill().map((_, x) => {
 			for (let y in this.layer)
 				if (this.layer[y][x] && this.layer[y][x] != 8)
@@ -63,9 +63,9 @@ export class Player {
 			return (20)
 		})
 
-		socket.emit(
+		client.emit(
 			`gameInfo:${this.room.name}`, {
-				clientId: this.socket.id,
+				clientId: this.client.id,
 				heights,
 				username: this.username,
 				scores: {
@@ -90,7 +90,7 @@ export class Player {
 				this.gameover = true;
 				this.currShape = undefined;
 				this.io.in(this.room.name).emit(`gameInfo:${this.room.name}`, {
-					clientId: this.socket.id,
+					clientId: this.client.id,
 					gameover: true,
 					isSolo: this.room.isSolo
 				});
@@ -117,7 +117,7 @@ export class Player {
 			}
 			this.layer = filteredLayer
 
-			this.sendLayerData(this.socket.in(this.room.name))
+			this.sendLayerData(this.client.in(this.room.name))
 		}
 		this.sendGameData();
 	}
