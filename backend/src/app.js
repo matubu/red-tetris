@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
 			room.removePlayer(client);
 			if (room.players.size == 0)
 			{
-				room.destroy();
+				room.removeInterval();
 				rooms.delete(roomname);
 			}
 			sendRoomList(io);
@@ -105,11 +105,11 @@ io.on("connection", (socket) => {
 			io.in(roomname).emit(`restart:${roomname}`);
 
 			for (let [_, player] of room.players)
-				player.client.destroy();
+				player.client.clearListeners();
 			room.players = new Map();
-			room.destroy();
+			room.removeInterval();
 
-			rooms.set(roomname, new Game(io, roomname, 'earth'));
+			rooms.set(roomname, new Game(io, roomname, room.gameMode));
 			room = rooms.get(roomname);
 
 			console.log('restart with', username);

@@ -25,7 +25,7 @@ export class Client {
 	removeAllListeners(event) {
 		this.socket.removeAllListeners(event)
 	}
-	destroy() {
+	clearListeners() {
 		for (let [event, handler] of this.listeners)
 		{
 			console.log('Remove event listner', event, handler)

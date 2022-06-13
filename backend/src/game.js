@@ -37,7 +37,7 @@ export class Game {
 		if (this.players.size == 0 || this.owner?.client.id === client.id)
 			this.setOwner(newPlayer);
 
-		this.players.get(client.id)?.destroy?.();
+		this.players.get(client.id)?.clearListeners?.();
 		this.players.set(client.id, newPlayer)
 	}
 
@@ -46,7 +46,7 @@ export class Game {
 	}
 
 	removePlayer(client) {
-		client.destroy();
+		client.clearListeners();
 
 		const currPlayer = this.players.get(client.id);
 		
@@ -64,7 +64,7 @@ export class Game {
 		this.sendUsersList()
 	}
 
-	destroy() {
+	removeInterval() {
 		clearInterval(this.interval);
 	}
 
@@ -77,7 +77,7 @@ export class Game {
 		console.log('nbGameover->', nbGameover, 'nbPlayer->', nbPlayer);
 		if (nbGameover >= nbPlayer - 1) {
 			// Stop the setInterval of the game and delete the listeners 'event'
-			this.destroy();
+			this.removeInterval();
 			for (let [_, player] of this.players)
 				player.client.removeAllListeners(`event:${this.name}`);
 			let list = [];
