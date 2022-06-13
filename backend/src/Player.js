@@ -50,8 +50,7 @@ export class Player {
 				score: this.score,
 				lines: this.lines
 			},
-			nextShape,
-			isSolo: this.room.isSolo
+			nextShape
 		});
 	}
 
@@ -71,8 +70,7 @@ export class Player {
 				scores: {
 					score: this.score,
 					lines: this.lines
-				},
-				isSolo: this.room.isSolo
+				}
 			}
 		)
 	}
@@ -91,8 +89,7 @@ export class Player {
 				this.currShape = undefined;
 				this.io.in(this.room.name).emit(`gameInfo:${this.room.name}`, {
 					clientId: this.client.id,
-					gameover: true,
-					isSolo: this.room.isSolo
+					gameover: true
 				});
 				this.room.gameOverList.push(this);
 				return ;

@@ -323,7 +323,7 @@
 			>LEAVE</button>
 		{/if}
 	</aside>
-	{#if isEndGame || (endPlayerList.length === 0 && gameover)}
+	{#if isEndGame}
 		<div class="card card-endgame">
 			<h2>Scores</h2>
 			<div class="score-div">
@@ -339,21 +339,23 @@
 				</div>
 				<hr/>
 			{/each}
-			{#if owner}
+			<div class="action">
 				<button
-				class="red-button"
-				on:click={() => {
-					socket.emit(`restart:${roomname}`);
-				}}
-			>RESTART</button>
-			{/if}
-			<button
-				class="red-button"
-				on:click={() => {
-					socket.emit('leaveRoom')
-					goto(`/rooms`)
-				}}
-			>LEAVE</button>
+					class="red-button"
+						on:click={() => {
+							socket.emit('leaveRoom')
+							goto(`/rooms`)
+						}}
+					>LEAVE</button>
+				{#if owner}
+					<button
+						class="red-button"
+						on:click={() => {
+							socket.emit(`restart:${roomname}`);
+						}}
+					>RESTART</button>
+				{/if}
+			</div>
 		</div>
 	{/if}
 

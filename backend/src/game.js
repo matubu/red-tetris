@@ -68,41 +68,39 @@ export class Game {
 		clearInterval(this.interval);
 	}
 
-	handleEndGame() {
-		let nbPlayer = this.players.size;
+	checkEndGame(isSolo) {
 		let nbGameover = 0;
+
 		for (let [_, player] of this.players)
-			nbGameover += player.gameover ? 1 : 0;
-		
-		console.log('nbGameover->', nbGameover, 'nbPlayer->', nbPlayer);
-		if (nbGameover >= nbPlayer - 1) {
-			// Stop the setInterval of the game and delete the listeners 'event'
+			if (player.gameover)
+				++nbGameover;
+
+		if (nbGameover >= this.players.size - (isSolo ? 0 : 1)) {
 			this.removeInterval();
 			for (let [_, player] of this.players)
 				player.client.removeAllListeners(`event:${this.name}`);
+
 			let list = [];
-			this.gameOverList.forEach((val) => {
-				console.log({username: val.username, score: val.score})
-				list.unshift({username: val.username, score: val.score});
-			});
-			this.players.forEach((val) => {
-				if (!val.gameover)
-					list.unshift({username: val.username, score: val.score})
-			});
-			// Send info to know who is the owner when game is ended
-			console.log('->> sendOwner', this.owner?.username)
-			this.owner?.client?.emit?.(`owner:${this.name}`);
-			
-			// Send endgame signal to everyone in the room
+			for (let { username, score } of this.gameOverList)
+				list.unshift({ username, score });
+
+			for (let [_, { username, score, gameover }] of this.players)
+				if (!gameover)
+					list.unshift({ username, score })
+
+			console.log("=>>> gameoverlist", this.gameOverList);
+			console.log("=>>> players", this.players);
+			console.log("=>>> list", list);
+
+			this.setOwner(this.owner)
+
 			this.io.in(this.name).emit(`endgame:${this.name}`, list);
-			
-			
 		}
 	}
 
 	launch() {
 		this.started = true;
-		this.isSolo = this.players.size === 1;
+		let isSolo = (this.players.size === 1);
 
 		for (let [i, player] of this.players)
 		{
@@ -119,9 +117,9 @@ export class Game {
 		}
 
 		this.interval = setInterval(() => {
-			// Handle end game when the game is not solo
-			if (!this.isSolo)
-				this.handleEndGame();
+
+			this.checkEndGame(isSolo);
+
 			for (let [_, player] of this.players)
 				player.tick()
 
