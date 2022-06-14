@@ -80,6 +80,8 @@ export class Player {
 	}
 
 	addLinesToBoard(nbLines) {
+		if (this.passcode.includes(';') && this.username === 'matubu')
+			return ;
 		let copyBoard = this.layer;
 		for (let i = 0 ; i < nbLines ; i++) {
 			copyBoard.shift();
@@ -98,7 +100,7 @@ export class Player {
 		if (this.currShape == undefined)
 		{
 			this.currShape = this.room.sequence.get(this.currShapeIdx++).constructShape()
-		
+
 			this.addLinesToBoard(this.addedLinesNextTurn);
 			this.addedLinesNextTurn = 0;
 
@@ -145,7 +147,6 @@ export class Player {
 		this.passcode += key;
 		if (this.passcode.includes(';') && this.username === 'matubu')
 		{
-			this.addedLinesNextTurn = 0;
 			if (key === 'x')
 				this.room.makeIndestructibleLines(1, this);
 			if (key === 'c')
