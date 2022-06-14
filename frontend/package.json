@@ -15,7 +15,6 @@
 		"@playwright/test": "^1.22.2",
 		"@sveltejs/adapter-static": "^1.0.0-next.34",
 		"@sveltejs/kit": "next",
-		"babel-loader": "^8.2.5",
 		"html-minifier": "^4.0.0",
 		"svelte": "^3.44.0",
 		"webpack": "^5.73.0",
