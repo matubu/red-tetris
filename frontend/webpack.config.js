@@ -6,8 +6,6 @@ const file = fs.readFileSync('./build/_app/immutable/manifest.json')
 const manifest = JSON.parse(file)
 const filename = manifest['.svelte-kit/runtime/client/start.js'].file
 
-console.log(`./build/_app/immutable/${filename}`)
-
 export default {
 	mode: 'production',
 
