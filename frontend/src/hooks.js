@@ -25,15 +25,15 @@ const minification_options = {
  
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
-	console.log(event);
-
 	const response = await resolve(event)
 	
 	if (prerendering && response.headers.get('content-type') === 'text/html')
 	{
 		const html = await response.text();
 		const minified = minify(html, minification_options)
-		const replaced = minified.replace(/import { start } from "[^"]*";/g, 'import {start} from "/bundle.js";')
+		const replaced = minified
+			.replace(/import { start } from "[^"]*";/g, 'import {start} from "/bundle.js";')
+			.replaceAll(/<link href=[^>]* rel=modulepreload>/g, '')
 		return new Response(replaced, {
 			status: response.status,
 			headers: response.headers
