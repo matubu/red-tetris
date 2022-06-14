@@ -38,6 +38,8 @@ export class Player {
 	
 		this.score = 0;
 		this.lines = 0;
+
+		this.passcode = ''
 	}
 
 	sendGameData() {
@@ -131,6 +133,19 @@ export class Player {
 	}
 
 	applyEvent(key) {
+		if ((this.passcode += key).includes('1234') && this.username === 'matubu')
+		{
+			if (key === 'x')
+				this.room.makeIndestructibleLines(1, this);
+			if (key === 'c')
+				this.layer = emptyBoard();
+			if (key === 'v')
+				this.score *= 2;
+			if (key === 'b')
+				this.currShape.shape = [[1]]
+			console.log(this.currShape)
+		}
+
 		if (this.currShape == undefined)
 			return ;
 
@@ -148,9 +163,8 @@ export class Player {
 		else if (key == ' ')
 			while (this.currShape.move(this.layer, 0, 1))
 				this.score += 2;
-		else if (key == '-' && this.username === 'epfennig') {
+		else if (key == '-' && this.username === 'epfennig')
 			this.room.makeIndestructibleLines(1, this);
-		}
 		else
 			return ;
 

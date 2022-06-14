@@ -4,7 +4,7 @@
 	"scripts": {
 		"dev": "svelte-kit dev",
 		"build": "svelte-kit build",
-		"bundle": "webpack",
+		"bundle": "webpack && sh bundle.sh",
 		"preview": "svelte-kit preview",
 		"start": "npm run build && npm run bundle && npm run preview",
 		"package": "svelte-kit package",

@@ -1,4 +1,4 @@
-class Piece {
+export class Piece {
 	constructor(colorid, shape) {
 		this.x = 5 - Math.ceil(shape.length / 2);
 		this.y = 0;
@@ -84,7 +84,7 @@ class Piece {
 	}
 }
 
-class Tetriminos {
+export class Tetriminos {
 	constructor(colorid, shape) {
 		this.colorid = colorid;
 		this.shape = shape;

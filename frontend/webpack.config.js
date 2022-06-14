@@ -15,20 +15,17 @@ export default {
 
 	output: {
 		filename: 'bundle.js',
-		path: path.resolve('static')
-	},
-	
-	// "compilerOptions": {
-	// 	"module": "commonjs",
-	// 	"target": "esnext",
-	// 	"lib": ["es2015", "webworker"],
-	// 	"noImplicitAny": true,
-	// 	"preserveConstEnums": true,
-	// 	"outDir": "./dist",
-	// 	"moduleResolution": "node"
-	//   },
+		path: path.resolve('static'),
 
-	// target: ["web", "es2020"],	  
+		libraryTarget: 'module',
+		libraryExport: 'start'
+	},
+
+	experiments: {
+		outputModule: true
+	},
+
+	target: ['web', 'es2020'],
 
 	plugins: [
 		new webpack.optimize.LimitChunkCountPlugin({
