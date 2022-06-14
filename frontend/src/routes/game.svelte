@@ -89,6 +89,7 @@
 		--shadow: inset 0 0 0 5px var(--shadow-color), inset -5px -5px var(--shadow-color);
 		box-shadow: var(--shadow), 0 0 6px var(--color);
 	}
+	.cell-9 { --color: #545151; }
 	.cell-1 { --color: #8fcdee; }
 	.cell-2 { --color: #5555ef; }
 	.cell-3 { --color: #e58e36; }

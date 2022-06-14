@@ -75,10 +75,28 @@ export class Player {
 		)
 	}
 
+	addIndestructibleLine(nbLines) {
+		console.log('addIndestructibleLine ->', this.username, nbLines);
+		let copyBoard = this.layer;
+		// for (let i = 0 ; i < 20 ; i++) {
+		// 	if (i >= 20 - nbLines) {
+		// 		copyBoard[i].fill(9);
+		// 	}
+		// 	else if (i >= nbLines)
+		// 		copyBoard[i - nbLines] = copyBoard[i];
+			
+		// }
+		for (let i = 0 ; i < nbLines ; i++) {
+			copyBoard.shift();
+			copyBoard.push(new Array(10).fill(9));
+		}
+		console.log('copyBoard ->', copyBoard);
+		this.layer = copyBoard;
+	}
+
 	tick() {
 		if (this.gameover)
 			return ;
-
 		if (this.currShape == undefined)
 		{
 			this.currShape = this.room.sequence.get(this.currShapeIdx++).constructShape()
@@ -95,7 +113,7 @@ export class Player {
 				return ;
 			}
 		}
-		
+
 		let moved = this.currShape.tick(this.layer);
 		this.board = draw(this.currShape, this.layer);
 
@@ -105,7 +123,10 @@ export class Player {
 			this.currShape = undefined;
 
 			let filteredLayer = this.layer
-				.filter(row => row.some(cell => cell == 0));
+				.filter(row => row.some(cell => cell == 0 || cell == 8 || cell == 9));
+			
+			// Make n - 1 lines indestructible for all players
+			this.room.makeIndestructibleLines((this.layer.length - filteredLayer.length) - 1, this);
 			this.score += [0, 100, 300, 500, 800][this.layer.length - filteredLayer.length];
 			while (filteredLayer.length != this.layer.length)
 			{

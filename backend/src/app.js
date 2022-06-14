@@ -101,7 +101,6 @@ io.on("connection", (socket) => {
 		client.on(`restart:${roomname}`, () => {
 			if (room.owner?.client?.id !== client.id)
 				return ;
-			console.log('send restart signal');
 			io.in(roomname).emit(`restart:${roomname}`);
 
 			for (let [_, player] of room.players)
@@ -111,8 +110,6 @@ io.on("connection", (socket) => {
 
 			rooms.set(roomname, new Game(io, roomname, room.gameMode));
 			room = rooms.get(roomname);
-
-			console.log('restart with', username);
 
 			room.addPlayer(username, client, () => {});
 		});

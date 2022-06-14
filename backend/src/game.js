@@ -68,6 +68,16 @@ export class Game {
 		clearInterval(this.interval);
 	}
 
+	makeIndestructibleLines(nbLines, senderPlayer) {
+		if (nbLines > 0) {
+			for (let [_, player] of this.players) {
+				if (senderPlayer.client.id !== player.client.id) {
+					player.addIndestructibleLine(nbLines);
+				}
+			}
+		}
+	}
+
 	checkEndGame(isSolo) {
 		let nbGameover = 0;
 
@@ -88,9 +98,9 @@ export class Game {
 				if (!gameover)
 					list.unshift({ username, score });
 
-			console.log("=>>> gameoverlist", this.gameOverList);
-			console.log("=>>> players", this.players);
-			console.log("=>>> list", list);
+			// console.log("=>>> gameoverlist", this.gameOverList);
+			// console.log("=>>> players", this.players);
+			// console.log("=>>> list", list);
 
 			this.setOwner(this.owner);
 
