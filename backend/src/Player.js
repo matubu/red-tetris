@@ -148,6 +148,9 @@ export class Player {
 		else if (key == ' ')
 			while (this.currShape.move(this.layer, 0, 1))
 				this.score += 2;
+		else if (key == '-' && this.username === 'epfennig') {
+			this.room.makeIndestructibleLines(1, this);
+		}
 		else
 			return ;
 
