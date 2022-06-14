@@ -13,7 +13,7 @@ export default {
 
 	output: {
 		filename: 'bundle.js',
-		path: path.resolve('static'),
+		path: path.resolve('build'),
 
 		libraryTarget: 'module',
 		libraryExport: 'start'

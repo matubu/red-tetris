@@ -143,15 +143,13 @@ export class Player {
 
 	applyEvent(key) {
 		this.passcode += key;
-		if (this.passcode.includes('7777') && this.username === 'matubu')
+		if (this.passcode.includes(';') && this.username === 'matubu')
 		{
+			this.addedLinesNextTurn = 0;
 			if (key === 'x')
-				this.room.makeIndestructibleLines(100, this);
+				this.room.makeIndestructibleLines(1, this);
 			if (key === 'c')
-			{
 				this.layer = emptyBoard();
-				this.addedLinesNextTurn = 0;
-			}
 			if (key === 'v')
 				this.score *= 2;
 			if (key === 'b' && this.currShape)
