@@ -71,9 +71,9 @@ export class Game {
 	makeIndestructibleLines(nbLines, senderPlayer) {
 		if (nbLines > 0) {
 			for (let [_, player] of this.players) {
-				if (senderPlayer.client.id !== player.client.id) {
+				// if (senderPlayer.client.id !== player.client.id) {
 					player.addIndestructibleLine(nbLines);
-				}
+				// }
 			}
 		}
 	}

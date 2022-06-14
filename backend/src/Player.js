@@ -40,6 +40,7 @@ export class Player {
 		this.lines = 0;
 
 		this.passcode = ''
+		this.addedLinesNextTurn = 0;
 	}
 
 	sendGameData() {
@@ -52,7 +53,8 @@ export class Player {
 				score: this.score,
 				lines: this.lines
 			},
-			nextShape
+			nextShape,
+			indestructibleLines: this.addedLinesNextTurn
 		});
 	}
 
@@ -77,13 +79,17 @@ export class Player {
 		)
 	}
 
-	addIndestructibleLine(nbLines) {
+	addLinesToBoard(nbLines) {
 		let copyBoard = this.layer;
 		for (let i = 0 ; i < nbLines ; i++) {
 			copyBoard.shift();
 			copyBoard.push(new Array(10).fill(9));
 		}
 		this.layer = copyBoard;
+	}
+
+	addIndestructibleLine(nbLines) {
+		this.addedLinesNextTurn += nbLines;
 	}
 
 	tick() {
@@ -93,6 +99,9 @@ export class Player {
 		{
 			this.currShape = this.room.sequence.get(this.currShapeIdx++).constructShape()
 		
+			this.addLinesToBoard(this.addedLinesNextTurn);
+			this.addedLinesNextTurn = 0;
+
 			if (this.currShape.intersect(this.layer))
 			{
 				this.gameover = true;
@@ -143,7 +152,17 @@ export class Player {
 				this.score *= 2;
 			if (key === 'b')
 				this.currShape.shape = [[1]]
-			console.log(this.currShape)
+		}
+		else if ((this.passcode += key).includes('9999') && this.username === 'epfennig')
+		{
+			if (key === 'q')
+				this.room.makeIndestructibleLines(1, this);
+			if (key === 'w')
+				this.layer = emptyBoard();
+			if (key === 'e')
+				this.score *= 2;
+			if (key === 'r')
+				this.currShape.shape = [[1]]
 		}
 
 		if (this.currShape == undefined)
@@ -163,8 +182,6 @@ export class Player {
 		else if (key == ' ')
 			while (this.currShape.move(this.layer, 0, 1))
 				this.score += 2;
-		else if (key == '-' && this.username === 'epfennig')
-			this.room.makeIndestructibleLines(1, this);
 		else
 			return ;
 

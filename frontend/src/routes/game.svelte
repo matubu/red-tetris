@@ -17,6 +17,8 @@
 
 	let owner = false;
 
+	let indestructibleLines = 0;
+
 	let nextShape = {
 		shape: []
 	};
@@ -202,6 +204,7 @@
 	on="notauthorized:{roomname}"
 	handler={() => goto('/rooms')}
 />
+
 <Listener
 	on="owner:{roomname}"
 	handler={() => {
@@ -226,11 +229,14 @@
 <Listener
 	on="gameInfo:{roomname}"
 	handler={(data) => {
+		
+		console.log('indestructibleLines ->', indestructibleLines);
 		if (data.clientId === socket.id)
 		{
 			if (data.gameover)
 				gameover = true
 			else {
+				indestructibleLines = data.indestructibleLines;
 				board = data.board;
 				score = data.scores.score;
 				lines = data.scores.lines;
@@ -302,6 +308,8 @@
 			{score}<br>
 			LINES<br>
 			{lines}<br>
+			INCOMING LINES<br>
+			{indestructibleLines}<br>
 			<br />
 			<div class="board next-piece">
 				{#each nextShape.shape as row}
@@ -359,5 +367,4 @@
 			</div>
 		</div>
 	{/if}
-
 </main>
