@@ -76,21 +76,11 @@ export class Player {
 	}
 
 	addIndestructibleLine(nbLines) {
-		console.log('addIndestructibleLine ->', this.username, nbLines);
 		let copyBoard = this.layer;
-		// for (let i = 0 ; i < 20 ; i++) {
-		// 	if (i >= 20 - nbLines) {
-		// 		copyBoard[i].fill(9);
-		// 	}
-		// 	else if (i >= nbLines)
-		// 		copyBoard[i - nbLines] = copyBoard[i];
-			
-		// }
 		for (let i = 0 ; i < nbLines ; i++) {
 			copyBoard.shift();
 			copyBoard.push(new Array(10).fill(9));
 		}
-		console.log('copyBoard ->', copyBoard);
 		this.layer = copyBoard;
 	}
 

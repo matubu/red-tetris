@@ -98,10 +98,6 @@ export class Game {
 				if (!gameover)
 					list.unshift({ username, score });
 
-			// console.log("=>>> gameoverlist", this.gameOverList);
-			// console.log("=>>> players", this.players);
-			// console.log("=>>> list", list);
-
 			this.setOwner(this.owner);
 
 			this.io.in(this.name).emit(`endgame:${this.name}`, list);
