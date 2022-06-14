@@ -13,7 +13,7 @@ async function connect() {
 		client.connect(err => {
 			const db = client.db("red-tetris");
 			// perform actions on the collection object
-			resolve(db)
+			resolve(db);
 		})
 	})
 }

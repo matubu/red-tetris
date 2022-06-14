@@ -9,7 +9,7 @@ export class Game {
 		this.gameMode = gameMode;
 		this.sequence = new Sequence();
 		this.started = false;
-		this.players = new Map() // Array of Player
+		this.players = new Map(); // Array of Player
 		this.owner = undefined;
 		this.gameOverList = [];
 	}
@@ -50,7 +50,7 @@ export class Game {
 
 		const currPlayer = this.players.get(client.id);
 		
-		this.players.delete(client.id)
+		this.players.delete(client.id);
 
 		if (this?.owner?.client?.id === client.id)
 			this.setOwner([...this.players.values()][0]);
@@ -61,7 +61,7 @@ export class Game {
 				score: currPlayer.score
 			})
 
-		this.sendUsersList()
+		this.sendUsersList();
 	}
 
 	removeInterval() {
@@ -86,13 +86,13 @@ export class Game {
 
 			for (let [_, { username, score, gameover }] of this.players)
 				if (!gameover)
-					list.unshift({ username, score })
+					list.unshift({ username, score });
 
 			console.log("=>>> gameoverlist", this.gameOverList);
 			console.log("=>>> players", this.players);
 			console.log("=>>> list", list);
 
-			this.setOwner(this.owner)
+			this.setOwner(this.owner);
 
 			this.io.in(this.name).emit(`endgame:${this.name}`, list);
 		}
@@ -105,13 +105,13 @@ export class Game {
 		for (let [i, player] of this.players)
 		{
 			player.client.on(`event:${this.name}`, (key) => {
-				player.applyEvent(key)
-			})
+				player.applyEvent(key);
+			});
 
 			const sendLayerData = () => {
 				for (let [j, other] of this.players)
 					if (i != j)
-						other.sendLayerData(player.client)
+						other.sendLayerData(player.client);
 			}
 			player.client.on('initgame', sendLayerData);
 		}
@@ -121,7 +121,7 @@ export class Game {
 			this.checkEndGame(isSolo);
 
 			for (let [_, player] of this.players)
-				player.tick()
+				player.tick();
 
 		}, {
 			blackhole: 75,

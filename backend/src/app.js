@@ -33,9 +33,9 @@ async function sendScores(socket, username) {
 
 io.on("connection", (socket) => {
 
-	socket.on('getRoomList', () => sendRoomList(socket))
+	socket.on('getRoomList', () => sendRoomList(socket));
 
-	socket.on('getScoresList', (username) => sendScores(socket, username))
+	socket.on('getScoresList', (username) => sendScores(socket, username));
 
 	socket.on('initgame', (roomname) => {
 
@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
 		if (currRoom == undefined || !currRoom.players.has(socket.id))
 			socket.emit(`notauthorized:${roomname}`)
 
-	})
+	});
 
 	socket.on('joinRoom', ({ user: username, name: roomname }) => {
 
@@ -118,7 +118,7 @@ io.on("connection", (socket) => {
 		});
 
 		client.on(`gameMode:${roomname}`, (gameMode) => {
-			let newGameMode = gameMode ?? room.gameMode
+			let newGameMode = gameMode ?? room.gameMode;
 
 			if (room.owner?.client?.id === client.id)
 				room.gameMode = newGameMode;

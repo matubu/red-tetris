@@ -1,9 +1,9 @@
 class Piece {
 	constructor(colorid, shape) {
-		this.x = 5 - Math.ceil(shape.length / 2)
-		this.y = 0
-		this.colorid = colorid
-		this.shape = shape.map(row => [...row])
+		this.x = 5 - Math.ceil(shape.length / 2);
+		this.y = 0;
+		this.colorid = colorid;
+		this.shape = shape.map(row => [...row]);
 	}
 	clone() {
 		let newShape = new Piece(this.colorid, this.shape);
@@ -20,8 +20,8 @@ class Piece {
 				if (!cell)
 					continue ;
 
-				let rx = this.x + +x
-				let ry = this.y + +y
+				let rx = this.x + +x;
+				let ry = this.y + +y;
 				if (
 					rx < 0
 					|| rx >= board[0].length
@@ -34,26 +34,26 @@ class Piece {
 		return (false);
 	}
 	rotateLeft(board) {
-		let old_shape = this.shape.map(row => [...row])
+		let old_shape = this.shape.map(row => [...row]);
 		for (let y in this.shape)
 			for (let x in this.shape[y])
-				this.shape[y][x] = old_shape[this.shape.length - 1 - x][y]
+				this.shape[y][x] = old_shape[this.shape.length - 1 - x][y];
 		if (this.intersect(board))
 		{
-			this.move(board, 1, 0)
-			this.move(board, -1, 0)
+			this.move(board, 1, 0);
+			this.move(board, -1, 0);
 			if (this.intersect(board))
 			{
-				this.move(board, 2, 0)
-				this.move(board, -2, 0)
+				this.move(board, 2, 0);
+				this.move(board, -2, 0);
 				if (this.intersect(board))
-					this.shape = old_shape
+					this.shape = old_shape;
 			}
 		}
 	}
 	move(board, ox, oy) {
-		this.x += ox
-		this.y += oy
+		this.x += ox;
+		this.y += oy;
 		if (this.intersect(board))
 		{
 			this.x -= ox;
@@ -63,7 +63,7 @@ class Piece {
 		return (true)
 	}
 	tick(board) {
-		return this.move(board, 0, 1)
+		return this.move(board, 0, 1);
 	}
 	drawOn(board) {
 		let copyBoard = board.map(row => [...row]);
@@ -73,10 +73,10 @@ class Piece {
 			{
 				if (this.shape[y][x])
 				{
-					let py = this.y + +y
-					let px = this.x + +x
+					let py = this.y + +y;
+					let px = this.x + +x;
 					if (copyBoard[py]?.[px] !== undefined)
-						copyBoard[py][px] = this.colorid
+						copyBoard[py][px] = this.colorid;
 				}
 			}
 		}
@@ -86,11 +86,11 @@ class Piece {
 
 class Tetriminos {
 	constructor(colorid, shape) {
-		this.colorid = colorid
-		this.shape = shape
+		this.colorid = colorid;
+		this.shape = shape;
 	}
 	constructShape() {
-		return (new Piece(this.colorid, this.shape))
+		return (new Piece(this.colorid, this.shape));
 	}
 }
 
@@ -151,4 +151,4 @@ export const TETRIMINOS = [
 			[0, 0, 0]
 		]
 	)
-]
+];

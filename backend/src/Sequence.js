@@ -5,7 +5,7 @@ export class Sequence {
 		this.sequence = [];
 
 		for (let i = 0; i < 32; ++i) {
-			let tetriminos = [0, 1, 2, 3, 4, 5, 6]
+			let tetriminos = [0, 1, 2, 3, 4, 5, 6];
 			let currentIndex = tetriminos.length, randomIndex;
 	
 			// While there remain elements to shuffle.
@@ -22,6 +22,6 @@ export class Sequence {
 		}
 	}
 	get(i) {
-		return (TETRIMINOS[this.sequence[i % this.sequence.length]])
+		return (TETRIMINOS[this.sequence[i % this.sequence.length]]);
 	}
 }
