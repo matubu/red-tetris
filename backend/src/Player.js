@@ -142,7 +142,8 @@ export class Player {
 	}
 
 	applyEvent(key) {
-		if ((this.passcode += key).includes('1234') && this.username === 'matubu')
+		this.passcode += key;
+		if (this.passcode.includes('7777') && this.username === 'matubu')
 		{
 			if (key === 'x')
 				this.room.makeIndestructibleLines(100, this);
@@ -153,10 +154,10 @@ export class Player {
 			}
 			if (key === 'v')
 				this.score *= 2;
-			if (key === 'b')
+			if (key === 'b' && this.currShape)
 				this.currShape.shape = [[1]]
 		}
-		else if ((this.passcode += key).includes('9999') && this.username === 'epfennig')
+		else if (this.passcode.includes('9999') && this.username === 'epfennig')
 		{
 			if (key === 'q')
 				this.room.makeIndestructibleLines(1, this);
@@ -164,7 +165,7 @@ export class Player {
 				this.layer = emptyBoard();
 			if (key === 'e')
 				this.score *= 2;
-			if (key === 'r')
+			if (key === 'r' && this.currShape)
 				this.currShape.shape = [[1]]
 		}
 
