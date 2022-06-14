@@ -85,18 +85,22 @@ export class Piece {
 }
 
 export class Tetriminos {
-	constructor(colorid, shape) {
+	constructor(colorid, y, shape) {
 		this.colorid = colorid;
+		this.y = y;
 		this.shape = shape;
 	}
 	constructShape() {
-		return (new Piece(this.colorid, this.shape));
+		let piece = new Piece(this.colorid, this.shape);
+		piece.y = this.y - 1;
+		return (piece);
 	}
 }
 
 export const TETRIMINOS = [
 	new Tetriminos(
 		1,
+		-1,
 		[
 			[0, 0, 0, 0],
 			[1, 1, 1, 1],
@@ -106,6 +110,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		2,
+		0,
 		[
 			[1, 0, 0],
 			[1, 1, 1],
@@ -114,6 +119,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		3,
+		0,
 		[
 			[0, 0, 1],
 			[1, 1, 1],
@@ -122,6 +128,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		4,
+		0,
 		[
 			[1, 1],
 			[1, 1]
@@ -129,6 +136,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		5,
+		0,
 		[
 			[0, 1, 1],
 			[1, 1, 0],
@@ -137,6 +145,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		6,
+		0,
 		[
 			[0, 1, 0],
 			[1, 1, 1],
@@ -145,6 +154,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		7,
+		0,
 		[
 			[1, 1, 0],
 			[0, 1, 1],
