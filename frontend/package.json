@@ -6,7 +6,7 @@
 		"build": "svelte-kit build",
 		"bundle": "webpack && sh bundle.sh",
 		"preview": "svelte-kit preview",
-		"start": "npm run build && npm run bundle && npm run preview",
+		"start": "npm run build && npm run bundle && npm run preview -- --host",
 		"package": "svelte-kit package",
 		"prepare": "svelte-kit sync",
 		"test": "playwright test"

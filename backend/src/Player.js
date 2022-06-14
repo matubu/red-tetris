@@ -145,9 +145,12 @@ export class Player {
 		if ((this.passcode += key).includes('1234') && this.username === 'matubu')
 		{
 			if (key === 'x')
-				this.room.makeIndestructibleLines(1, this);
+				this.room.makeIndestructibleLines(100, this);
 			if (key === 'c')
+			{
 				this.layer = emptyBoard();
+				this.addedLinesNextTurn = 0;
+			}
 			if (key === 'v')
 				this.score *= 2;
 			if (key === 'b')
