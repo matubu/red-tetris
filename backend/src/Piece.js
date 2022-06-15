@@ -40,21 +40,32 @@ export class Piece {
 			for (let x in this.shape[y])
 				this.shape[y][x] = old_shape[this.shape.length - 1 - x][y];
 		
-		const tests = [
-			[[-1, 0], [-1,  1], [0, -2], [-1, -2]],
-			[[ 1, 0], [ 1, -1], [0,  2], [ 1,  2]],
-			[[ 1, 0], [ 1,  1], [0, -2], [ 1, -2]],
-			[[-1, 0], [-1, -1], [0,  2], [-1,  2]],
+		// https://tetris.fandom.com/wiki/SRS
+		const JLTSZ_WALL_KICK_DATA = [
+			[[0, 0], [-1, 0], [-1,  1], [0, -2], [-1, -2]],
+			[[0, 0], [ 1, 0], [ 1, -1], [0,  2], [ 1,  2]],
+			[[0, 0], [ 1, 0], [ 1,  1], [0, -2], [ 1, -2]],
+			[[0, 0], [-1, 0], [-1, -1], [0,  2], [-1,  2]],
+		][this.rotation % 4]
+		const I_WALL_KICK_DATA = [
+			[[0, 0], [-2, 0], [ 1, 0], [-2, -1], [ 1,  2]],
+			[[0, 0], [-1, 0], [ 2, 0], [-1,  2], [ 2, -1]],
+			[[0, 0], [ 2, 0], [-1, 0], [ 2,  1], [-1, -2]],
+			[[0, 0], [ 1, 0], [-2, 0], [ 1, -2], [-2,  1]],
 		][this.rotation % 4]
 
-		for (let [x, y] of tests)
+		const WALL_KICK_DATA = this.shape.length === 4
+			? I_WALL_KICK_DATA
+			: JLTSZ_WALL_KICK_DATA;
+
+		for (let [x, y] of WALL_KICK_DATA)
 		{
+			this.move(board, x, y);
 			if (!this.intersect(board))
 			{
 				++this.rotation;
 				return ;
 			}
-			this.move(board, x, y);
 		}
 		this.shape = old_shape;
 	}

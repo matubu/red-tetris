@@ -39,7 +39,6 @@ export class Player {
 		this.score = 0;
 		this.lines = 0;
 
-		this.passcode = ''
 		this.addedLinesNextTurn = 0;
 	}
 
@@ -142,36 +141,6 @@ export class Player {
 	}
 
 	applyEvent(key) {
-		this.passcode += key;
-		if (this.passcode.includes(';') && this.username === 'matubu')
-		{
-			if (key === 'x')
-				this.room.makeIndestructibleLines(1, this);
-			if (key === 'z')
-				this.room.makeIndestructibleLines(20, this);
-			if (key === 'c')
-				this.layer = emptyBoard();
-			if (key === 'v')
-				this.score *= 2;
-			if (key === 'b' && this.currShape)
-				this.currShape.shape = [[1]]
-			if (key === 'n' && this.currShape)
-				++this.addedLinesNextTurn;
-			if (key === 'm' && this.currShape)
-				this.addedLinesNextTurn = 0;
-		}
-		else if (this.passcode.includes('9999') && this.username === 'epfennig')
-		{
-			if (key === 'q')
-				this.room.makeIndestructibleLines(1, this);
-			if (key === 'w')
-				this.layer = emptyBoard();
-			if (key === 'e')
-				this.score *= 2;
-			if (key === 'r' && this.currShape)
-				this.currShape.shape = [[1]]
-		}
-
 		if (this.currShape == undefined)
 			return ;
 
