@@ -94,7 +94,9 @@ io.on("connection", (socket) => {
 				return ;
 
 			io.in(roomname).emit(`start:${roomname}`);
-			room.launch();
+
+			if (!room.started)
+				room.launch();
 
 		});
 
