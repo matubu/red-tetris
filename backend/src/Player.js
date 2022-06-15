@@ -80,8 +80,6 @@ export class Player {
 	}
 
 	addLinesToBoard(nbLines) {
-		if (this.passcode.includes(';') && this.username === 'matubu')
-			return ;
 		let copyBoard = this.layer;
 		for (let i = 0 ; i < nbLines ; i++) {
 			copyBoard.shift();
@@ -155,6 +153,10 @@ export class Player {
 				this.score *= 2;
 			if (key === 'b' && this.currShape)
 				this.currShape.shape = [[1]]
+			if (key === 'n' && this.currShape)
+				++this.addedLinesNextTurn;
+			if (key === 'm' && this.currShape)
+				this.addedLinesNextTurn = 0;
 		}
 		else if (this.passcode.includes('9999') && this.username === 'epfennig')
 		{

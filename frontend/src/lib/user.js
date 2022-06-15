@@ -8,9 +8,12 @@ export let socket;
 
 if (browser)
 {
-	user.set(localStorage.getItem('user') ?? '')
+	let localStorageUser = localStorage.getItem('user')
+	if (localStorageUser)
+		user.set(localStorageUser)
 	user.subscribe(username => {
-		localStorage.setItem('user', username)
+		if (username)
+			localStorage.setItem('user', username)
 	});
 
 	socket = io(`http://${location.hostname}:4000`)

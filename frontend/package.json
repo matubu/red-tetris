@@ -10,7 +10,7 @@
 		"package": "svelte-kit package",
 		"prepare": "svelte-kit sync",
 		"test:install": "npx playwright install",
-		"test": "playwright test"
+		"test": "rm -rf report && playwright test --headed"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.22.2",
