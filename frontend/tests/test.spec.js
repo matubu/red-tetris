@@ -14,7 +14,7 @@ test('create game', async ({ page, browserName }) => {
 
 	await expect(page.locator('input').first()).toBeVisible();
 
-	let button = page.locator('button').first()
+	let button = page.locator('button').first();
 	await expect(button).toBeVisible();
 	await expect(button).toHaveText('PLAY');
 
@@ -46,8 +46,46 @@ test('create game', async ({ page, browserName }) => {
 	await page.keyboard.press('ArrowUp');
 	await page.keyboard.press('Space');
 
-})
+});
 
-// test('create game', async ({ page, browserName }) => {
+function generateUsername(isInvalid) {
+	let		result		= '';
+	let		charset		= 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
+	if (isInvalid)
+		charset = '{}[];:.,<>/?@#$%^&*()~=+~`\\|';
+	let length = charset.length;
+	for ( let i = 0; i < 8; i++ ) {
+		result += charset.charAt(Math.floor(Math.random() * length));
+	}
+	return result;
+}
 
-// }
+test('input username', async ({ page, browserName }) => {
+	
+	await page.goto('/');
+
+	let randomName = '';
+	let button = page.locator('button').first();
+
+	await expect(button).toBeVisible();
+	await expect(button).toHaveText('PLAY');
+
+	for (let i = 0 ; i < 10 ; i++)
+	{
+		await page.waitForLoadState();
+		await page.waitForTimeout(500);
+
+		await expect(page.locator('input').first()).toBeVisible();
+
+		// Try random names :
+		let isInvalid = (i % 2) ? true : false;
+		randomName = generateUsername(isInvalid);
+		await page.fill('input', randomName);
+		if (isInvalid)
+			await expect(page.locator('.error')).toHaveText('Username should only contains [a-z][0-9]_-');
+		else {
+			let isVisible = await page.locator('.error').isVisible();
+			await expect(isVisible).toBe(false);
+		}
+	}
+});
