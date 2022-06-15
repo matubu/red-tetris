@@ -24,7 +24,6 @@ export class Game {
 	setOwner(owner) {
 		this.owner = owner;
 		owner?.client?.emit?.(`owner:${this.name}`);
-		console.log(`setowner ${this.owner?.username}`);
 	}
 
 	addPlayer(username, client) {
@@ -62,6 +61,7 @@ export class Game {
 			})
 
 		this.sendUsersList();
+
 	}
 
 	removeInterval() {
