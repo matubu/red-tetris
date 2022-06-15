@@ -105,6 +105,9 @@ export class Game {
 	}
 
 	launch() {
+		if (room.started)
+			return ;
+
 		this.started = true;
 		let isSolo = (this.players.size === 1);
 
