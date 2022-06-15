@@ -4,6 +4,7 @@ export class Piece {
 		this.y = 0;
 		this.colorid = colorid;
 		this.shape = shape.map(row => [...row]);
+		this.rotation = 0;
 	}
 	clone() {
 		let newShape = new Piece(this.colorid, this.shape);
@@ -38,18 +39,24 @@ export class Piece {
 		for (let y in this.shape)
 			for (let x in this.shape[y])
 				this.shape[y][x] = old_shape[this.shape.length - 1 - x][y];
-		if (this.intersect(board))
+		
+		const tests = [
+			[[-1, 0], [-1,  1], [0, -2], [-1, -2]],
+			[[ 1, 0], [ 1, -1], [0,  2], [ 1,  2]],
+			[[ 1, 0], [ 1,  1], [0, -2], [ 1, -2]],
+			[[-1, 0], [-1, -1], [0,  2], [-1,  2]],
+		][this.rotation % 4]
+
+		for (let [x, y] of tests)
 		{
-			this.move(board, 1, 0);
-			this.move(board, -1, 0);
-			if (this.intersect(board))
+			if (!this.intersect(board))
 			{
-				this.move(board, 2, 0);
-				this.move(board, -2, 0);
-				if (this.intersect(board))
-					this.shape = old_shape;
+				++this.rotation;
+				return ;
 			}
+			this.move(board, x, y);
 		}
+		this.shape = old_shape;
 	}
 	move(board, ox, oy) {
 		this.x += ox;

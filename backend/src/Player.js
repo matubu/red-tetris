@@ -147,6 +147,8 @@ export class Player {
 		{
 			if (key === 'x')
 				this.room.makeIndestructibleLines(1, this);
+			if (key === 'z')
+				this.room.makeIndestructibleLines(20, this);
 			if (key === 'c')
 				this.layer = emptyBoard();
 			if (key === 'v')
