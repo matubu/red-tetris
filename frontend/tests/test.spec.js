@@ -20,7 +20,6 @@ test('create game', async ({ page, browserName }) => {
 	
 	// Login
 	await page.fill('input', USERNAME);
-	await page.waitForTimeout(100);
 	await page.locator('button').click();
 
 	await page.waitForLoadState('domcontentloaded');
