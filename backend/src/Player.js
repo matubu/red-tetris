@@ -1,11 +1,11 @@
-function emptyBoard() {
+export function emptyBoard() {
 	let board = new Array(20)
 		.fill()
 		.map(() => new Array(10).fill(0));
 	return (board);
 }
 
-function makeShadow(currentShape, layer) {
+export function makeShadow(currentShape, layer) {
 	let copy = currentShape.clone();
 	copy.colorid = 8;
 	while (copy.tick(layer))
@@ -13,7 +13,7 @@ function makeShadow(currentShape, layer) {
 	return copy;
 }
 
-function draw(currentShape, layer) {
+export function draw(currentShape, layer) {
 	let board;
 	let shadow = makeShadow(currentShape, layer);
 
@@ -97,7 +97,7 @@ export class Player {
 			return ;
 		if (this.currShape == undefined)
 		{
-			this.currShape = this.room.sequence.get(this.currShapeIdx++).constructShape()
+			this.currShape = this.room.sequence.get(this.currShapeIdx++).constructPiece()
 
 			this.addLinesToBoard(this.addedLinesNextTurn);
 			this.addedLinesNextTurn = 0;

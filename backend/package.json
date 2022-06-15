@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "start": "export $(cat .env) && nodemon src/app.js",
-    "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
+    "test": "export $(cat .env) && node --experimental-vm-modules ./node_modules/.bin/jest"
   },
   "jest": {
     "verbose": true,

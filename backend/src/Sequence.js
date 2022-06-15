@@ -1,10 +1,10 @@
 import { TETRIMINOS } from "./Piece.js";
 
 export class Sequence {
-	constructor() {
+	constructor(length = 32) {
 		this.sequence = [];
 
-		for (let i = 0; i < 32; ++i) {
+		for (let i = 0; i < length; ++i) {
 			let tetriminos = [0, 1, 2, 3, 4, 5, 6];
 			let currentIndex = tetriminos.length, randomIndex;
 	
