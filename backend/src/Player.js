@@ -69,6 +69,10 @@ export class Player {
 		)
 	}
 
+	sound(track) {
+		this.client.emit(`sound:${this.room.name}`, track)
+	}
+
 	addLinesToBoard(nbLines) {
 		let copyBoard = this.layer;
 		for (let i = 0 ; i < nbLines ; i++) {
@@ -89,9 +93,11 @@ export class Player {
 		let filteredLayer = this.layer
 			.filter(row => row.some(cell => cell == 0 || cell == 8 || cell == 9));
 		
+		let n = this.layer.length - filteredLayer.length;
 		// Make n - 1 lines indestructible for all players
-		this.room.makeIndestructibleLines((this.layer.length - filteredLayer.length) - 1, this);
-		this.score += [0, 100, 300, 500, 800][this.layer.length - filteredLayer.length];
+		this.room.makeIndestructibleLines(n - 1, this);
+		this.score += [0, 100, 300, 500, 800][n];
+		this.sound(['landing', 'single', 'double', 'triple', 'tetris'][n])
 		while (filteredLayer.length != this.layer.length)
 		{
 			filteredLayer.unshift(new Array(10).fill(0));
@@ -151,21 +157,32 @@ export class Player {
 			return ;
 
 		if (key == 'ArrowLeft')
+		{
 			this.currShape.move(this.layer, -1, 0);
+			this.sound('move');
+		}
 		else if (key == 'ArrowRight')
+		{
 			this.currShape.move(this.layer, 1, 0);
+			this.sound('move');
+		}
 		else if (key == 'ArrowUp')
+		{
 			this.currShape.rotateLeft(this.layer);
+			this.sound('rotate');
+		}
 		else if (key == 'ArrowDown')
 		{
 			this.currShape.move(this.layer, 0, 1);
 			this.score += 1;
+			this.sound('soft-drop');
 		}
 		else if (key == ' ')
 		{
 			while (this.currShape.move(this.layer, 0, 1))
 				this.score += 2;
 			this.newTetriminos();
+			this.sound('hard-drop');
 		}
 		else
 			return ;

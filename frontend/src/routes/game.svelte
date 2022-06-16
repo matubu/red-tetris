@@ -263,6 +263,13 @@
 	}}
 />
 
+<Listener
+	on="sound:{roomname}"
+	handler={(track) => {
+		new Audio(`/sound/${track}.wav`).play()
+	}}
+/>
+
 <main>
 	<aside class="others">
 		{#each [...usersBoard.entries()] as [_, { username, heights, scores, gameover }]}
