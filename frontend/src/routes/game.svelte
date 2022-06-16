@@ -32,7 +32,6 @@
 	}
 
 	function endGame(playerList) {
-		console.log(playerList);
 		endPlayerList = playerList;
 		isEndGame = true;
 	}
@@ -233,7 +232,6 @@
 	on="gameInfo:{roomname}"
 	handler={(data) => {
 		
-		console.log('indestructibleLines ->', indestructibleLines);
 		if (data.clientId === socket.id)
 		{
 			if (data.gameover)
@@ -244,7 +242,6 @@
 				score = data.scores.score;
 				lines = data.scores.lines;
 				nextShape = data.nextShape;
-				console.log(nextShape.shape);
 			}
 		}
 		else {

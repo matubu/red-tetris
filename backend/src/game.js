@@ -27,7 +27,6 @@ export class Game {
 	}
 
 	addPlayer(username, client) {
-		console.log('addPlayer', username, this.owner?.username)
 
 		let newPlayer = new Player(this.io, username, client, this);
 

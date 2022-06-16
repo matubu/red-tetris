@@ -5,9 +5,9 @@
 	import Listener from "$lib/Listener.svelte";
 	import { browser } from "$app/env"
 
-	let roomname = ''
-	let users = []
-	let owner = false
+	let roomname = '';
+	let users = [];
+	let owner = false;
 
 	let gameMode = undefined
 
