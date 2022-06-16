@@ -104,7 +104,6 @@ export class Player {
 			++this.lines;
 		}
 		this.layer = filteredLayer;
-
 		this.sendLayerData(this.client.in(this.room.name));
 	}
 

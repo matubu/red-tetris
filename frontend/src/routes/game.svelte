@@ -101,7 +101,7 @@
 	.cell-5 { --color: #73e852; }
 	.cell-6 { --color: #dc60ea; }
 	.cell-7 { --color: #ef4a58; }
-	.cell-8 { --color: #929393ae; }
+	.cell-8 { --color: #656e75; }
 	.cell-0, .cell-8 {
 		--shadow-color: #0d0d171e;
 		box-shadow: var(--shadow); 
@@ -265,9 +265,7 @@
 
 <Listener
 	on="sound:{roomname}"
-	handler={(track) => {
-		new Audio(`/sound/${track}.wav`).play()
-	}}
+	handler={(track) => new Audio(`/sound/${track}.wav`).play()}
 />
 
 <main>

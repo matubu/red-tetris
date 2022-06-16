@@ -12,6 +12,8 @@ export class Game {
 		this.players = new Map(); // Array of Player
 		this.owner = undefined;
 		this.gameOverList = [];
+
+		this.tick_per_secs = 0;
 	}
 
 	sendUsersList() {
@@ -64,7 +66,8 @@ export class Game {
 	}
 
 	stopInterval() {
-		clearInterval(this.interval);
+		this.tick_per_secs = 0;
+		clearTimeout(this.timeout);
 	}
 
 	makeIndestructibleLines(nbLines, senderPlayer) {
@@ -116,26 +119,34 @@ export class Game {
 				player.applyEvent(key);
 			});
 
-			const sendLayerData = () => {
+			player.client.on('initgame', () => {
 				for (let [j, other] of this.players)
 					if (i != j)
 						other.sendLayerData(player.client);
-			}
-			player.client.on('initgame', sendLayerData);
+			});
 		}
 
-		this.interval = setInterval(() => {
+		this.tick_per_secs = {
+			blackhole: 13,
+			sun: 6,
+			earth: 2.5,
+			moon: 1.25
+		}[this.gameMode];
+
+		const loop = () => {
 
 			this.checkEndGame(isSolo);
 
 			for (let [_, player] of this.players)
 				player.tick();
 
-		}, {
-			blackhole: 75,
-			sun: 150,
-			earth: 400,
-			moon: 800
-		}[this.gameMode])
+			if (this.tick_per_secs > 0)
+			{
+				this.timeout = setTimeout(loop, 1000 / this.tick_per_secs);
+				this.tick_per_secs += 0.002;
+			}
+
+		}
+		loop();
 	}
 }
