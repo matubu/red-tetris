@@ -140,6 +140,7 @@ export class Player {
 		}
 
 		this.sendGameData();
+		return false;
 	}
 
 	tick() {
