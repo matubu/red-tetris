@@ -2,8 +2,9 @@
   "type": "module",
   "scripts": {
     "start": "export $(cat .env) && nodemon src/app.js",
-    "test": "export $(cat .env) && node --experimental-vm-modules ./node_modules/.bin/jest"
-  },
+    "test": "export $(cat .env) && node --experimental-vm-modules ./node_modules/.bin/jest",
+	"coverage": "export $(cat .env) && node --experimental-vm-modules ./node_modules/.bin/jest --coverage"
+},
   "jest": {
     "verbose": true,
     "transform": {}
