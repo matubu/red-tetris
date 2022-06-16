@@ -3,7 +3,7 @@ import { Game } from './Game.js';
 import { scoresDB } from './mongodb.js';
 import { Client } from './Client.js'
 
-const io = new Server({
+export const io = new Server({
 	cors: {
 		origin: "*",
 		methods: ["GET", "POST"]
@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
 			room.removePlayer(client);
 			if (room.players.size == 0)
 			{
-				room.removeInterval();
+				room.stopInterval();
 				rooms.delete(roomname);
 			}
 			sendRoomList(io);
@@ -106,7 +106,7 @@ io.on("connection", (socket) => {
 			for (let [_, player] of room.players)
 				player.client.clearListeners();
 			room.players = new Map();
-			room.removeInterval();
+			room.stopInterval();
 
 			rooms.set(roomname, new Game(io, roomname, room.gameMode));
 			room = rooms.get(roomname);

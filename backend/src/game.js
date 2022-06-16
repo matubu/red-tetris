@@ -64,7 +64,7 @@ export class Game {
 
 	}
 
-	removeInterval() {
+	stopInterval() {
 		clearInterval(this.interval);
 	}
 
@@ -86,7 +86,7 @@ export class Game {
 				++nbGameover;
 
 		if (nbGameover >= this.players.size - (isSolo ? 0 : 1)) {
-			this.removeInterval();
+			this.stopInterval();
 			for (let [_, player] of this.players)
 				player.client.removeAllListeners(`event:${this.name}`);
 

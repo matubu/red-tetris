@@ -15,7 +15,6 @@ export class Client {
 		this.socket.emit(...args);
 	}
 	on(event, handler) {
-		console.log('Add event listner', event, handler);
 		this.socket.on(event, handler);
 		this.listeners.push([event, handler]);
 	}
@@ -27,10 +26,7 @@ export class Client {
 	}
 	clearListeners() {
 		for (let [event, handler] of this.listeners)
-		{
-			console.log('Remove event listner', event, handler);
 			this.socket.removeListener(event, handler);
-		}
 		for (let room of this.rooms)
 			this.socket.leave(room);
 	}
