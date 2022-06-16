@@ -118,7 +118,7 @@ export class Tetriminos {
 export const TETRIMINOS = [
 	new Tetriminos(
 		1,
-		-2,
+		-1,
 		[
 			[0, 0, 0, 0],
 			[1, 1, 1, 1],
@@ -128,7 +128,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		2,
-		-1,
+		0,
 		[
 			[1, 0, 0],
 			[1, 1, 1],
@@ -137,7 +137,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		3,
-		-1,
+		0,
 		[
 			[0, 0, 1],
 			[1, 1, 1],
@@ -146,7 +146,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		4,
-		-1,
+		0,
 		[
 			[1, 1],
 			[1, 1]
@@ -154,7 +154,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		5,
-		-1,
+		0,
 		[
 			[0, 1, 1],
 			[1, 1, 0],
@@ -163,7 +163,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		6,
-		-1,
+		0,
 		[
 			[0, 1, 0],
 			[1, 1, 1],
@@ -172,7 +172,7 @@ export const TETRIMINOS = [
 	),
 	new Tetriminos(
 		7,
-		-1,
+		0,
 		[
 			[1, 1, 0],
 			[0, 1, 1],

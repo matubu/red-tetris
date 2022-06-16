@@ -13,15 +13,6 @@ export function makeShadow(currentShape, layer) {
 	return copy;
 }
 
-export function draw(currentShape, layer) {
-	let board;
-	let shadow = makeShadow(currentShape, layer);
-
-	board = shadow.drawOn(layer);
-	board = currentShape.drawOn(board);
-	return board;
-}
-
 export class Player {
 	constructor(io, username, client, room) {
 		this.io = io;
@@ -91,53 +82,68 @@ export class Player {
 		this.addedLinesNextTurn += nbLines;
 	}
 
+	applyTetriminos() {
+		this.layer = this.currShape.drawOn(this.layer);
+		this.currShape = undefined;
+
+		let filteredLayer = this.layer
+			.filter(row => row.some(cell => cell == 0 || cell == 8 || cell == 9));
+		
+		// Make n - 1 lines indestructible for all players
+		this.room.makeIndestructibleLines((this.layer.length - filteredLayer.length) - 1, this);
+		this.score += [0, 100, 300, 500, 800][this.layer.length - filteredLayer.length];
+		while (filteredLayer.length != this.layer.length)
+		{
+			filteredLayer.unshift(new Array(10).fill(0));
+			++this.lines;
+		}
+		this.layer = filteredLayer;
+
+		this.sendLayerData(this.client.in(this.room.name));
+	}
+
+	newTetriminos() {
+		if (this.currShape)
+			this.applyTetriminos();
+
+		this.addLinesToBoard(this.addedLinesNextTurn);
+		this.addedLinesNextTurn = 0;
+
+		this.currShape = this.room.sequence.get(this.currShapeIdx++).constructPiece();
+
+		if (this.currShape.intersect(this.layer))
+		{
+			this.gameover = true;
+			this.currShape = undefined;
+			this.io.in(this.room.name).emit(`gameInfo:${this.room.name}`, {
+				clientId: this.client.id,
+				gameover: true
+			});
+			this.room.gameOverList.push(this);
+			return ;
+		}
+	}
+
+	draw() {
+		this.board = this.layer.map(row => [...row]);
+
+		if (this.currShape)
+		{
+			this.board = makeShadow(this.currShape, this.layer).drawOn(this.board);
+			this.board = this.currShape.drawOn(this.board);
+		}
+
+		this.sendGameData();
+	}
+
 	tick() {
 		if (this.gameover)
 			return ;
-		if (this.currShape == undefined)
-		{
-			this.currShape = this.room.sequence.get(this.currShapeIdx++).constructPiece()
 
-			this.addLinesToBoard(this.addedLinesNextTurn);
-			this.addedLinesNextTurn = 0;
+		if (!this?.currShape?.tick?.(this.layer))
+			this.newTetriminos();
 
-			if (this.currShape.intersect(this.layer))
-			{
-				this.gameover = true;
-				this.currShape = undefined;
-				this.io.in(this.room.name).emit(`gameInfo:${this.room.name}`, {
-					clientId: this.client.id,
-					gameover: true
-				});
-				this.room.gameOverList.push(this);
-				return ;
-			}
-		}
-
-		let moved = this.currShape.tick(this.layer);
-		this.board = draw(this.currShape, this.layer);
-
-		if (!moved)
-		{
-			this.layer = this.currShape.drawOn(this.layer);
-			this.currShape = undefined;
-
-			let filteredLayer = this.layer
-				.filter(row => row.some(cell => cell == 0 || cell == 8 || cell == 9));
-			
-			// Make n - 1 lines indestructible for all players
-			this.room.makeIndestructibleLines((this.layer.length - filteredLayer.length) - 1, this);
-			this.score += [0, 100, 300, 500, 800][this.layer.length - filteredLayer.length];
-			while (filteredLayer.length != this.layer.length)
-			{
-				filteredLayer.unshift(new Array(10).fill(0));
-				++this.lines;
-			}
-			this.layer = filteredLayer;
-
-			this.sendLayerData(this.client.in(this.room.name));
-		}
-		this.sendGameData();
+		this.draw();
 	}
 
 	applyEvent(key) {
@@ -156,12 +162,14 @@ export class Player {
 			this.score += 1;
 		}
 		else if (key == ' ')
+		{
 			while (this.currShape.move(this.layer, 0, 1))
 				this.score += 2;
+			this.newTetriminos();
+		}
 		else
 			return ;
 
-		this.board = draw(this.currShape, this.layer);
-		this.sendGameData();
+		this.draw();
 	}
 }
