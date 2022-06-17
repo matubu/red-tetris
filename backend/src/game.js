@@ -28,9 +28,9 @@ export class Game {
 		owner?.client?.emit?.(`owner:${this.name}`);
 	}
 
-	addPlayer(username, client) {
+	addPlayer(username, bot, client) {
 
-		let newPlayer = new Player(this.io, username, client, this);
+		let newPlayer = new Player(this.io, username, bot, client, this);
 
 		client.join(this.name);
 

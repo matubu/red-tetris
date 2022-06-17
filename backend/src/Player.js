@@ -14,10 +14,11 @@ export function makeShadow(currentShape, layer) {
 }
 
 export class Player {
-	constructor(io, username, client, room) {
+	constructor(io, username, bot, client, room) {
 		this.io = io;
 		this.client = client;
 		this.username = username;
+		this.isbot = bot;
 		this.room = room;
 		this.sequence = room.sequence;
 
@@ -44,6 +45,7 @@ export class Player {
 				lines: this.lines
 			},
 			nextShape,
+			currShape: this.currShape,
 			indestructibleLines: this.addedLinesNextTurn
 		});
 	}
@@ -129,7 +131,7 @@ export class Player {
 		}
 	}
 
-	draw() {
+	draw(send = true) {
 		this.board = this.layer.map(row => [...row]);
 
 		if (this.currShape)
@@ -138,55 +140,67 @@ export class Player {
 			this.board = this.currShape.drawOn(this.board);
 		}
 
-		this.sendGameData();
-		return false;
+		if (send)
+			this.sendGameData();
 	}
 
 	tick() {
 		if (this.gameover)
 			return ;
 
-		if (!this?.currShape?.tick?.(this.layer))
+		let newTetriminos = !this?.currShape?.tick?.(this.layer);
+		if (newTetriminos)
 			this.newTetriminos();
 
-		this.draw();
+		this.draw(newTetriminos || !this.isbot);
 	}
 
-	applyEvent(key) {
+	applyEvent(keys) {
 		if (this.currShape == undefined)
 			return ;
 
-		if (key == 'ArrowLeft')
-		{
-			this.currShape.move(this.layer, -1, 0);
-			this.sound('move');
-		}
-		else if (key == 'ArrowRight')
-		{
-			this.currShape.move(this.layer, 1, 0);
-			this.sound('move');
-		}
-		else if (key == 'ArrowUp')
-		{
-			this.currShape.rotateLeft(this.layer);
-			this.sound('rotate');
-		}
-		else if (key == 'ArrowDown')
-		{
-			this.currShape.move(this.layer, 0, 1);
-			this.score += 1;
-			this.sound('soft-drop');
-		}
-		else if (key == ' ')
-		{
-			while (this.currShape.move(this.layer, 0, 1))
-				this.score += 2;
-			this.newTetriminos();
-			this.sound('hard-drop');
-		}
-		else
-			return ;
+		let newTetriminos = false;
 
-		this.draw();
+		const applyKey = (key) => {
+			if (key == 'ArrowLeft')
+			{
+				this.currShape.move(this.layer, -1, 0);
+				this.sound('move');
+			}
+			else if (key == 'ArrowRight')
+			{
+				this.currShape.move(this.layer, 1, 0);
+				this.sound('move');
+			}
+			else if (key == 'ArrowUp')
+			{
+				this.currShape.rotateLeft(this.layer);
+				this.sound('rotate');
+			}
+			else if (key == 'ArrowDown')
+			{
+				this.currShape.move(this.layer, 0, 1);
+				this.score += 1;
+				this.sound('soft-drop');
+			}
+			else if (key == ' ')
+			{
+				while (this.currShape.move(this.layer, 0, 1))
+					this.score += 2;
+				this.newTetriminos();
+				newTetriminos = true;
+				this.sound('hard-drop');
+			}
+			else
+				return ;
+		}
+
+		if (keys instanceof Array)
+			for (let key of keys)
+				applyKey(key);
+		else
+			applyKey(keys);
+
+		this.draw(!this.isbot || newTetriminos);
 	}
 }

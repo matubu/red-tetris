@@ -46,7 +46,11 @@ io.on("connection", (socket) => {
 
 	});
 
-	socket.on('joinRoom', ({ user: username, name: roomname }) => {
+	socket.on('joinRoom', ({
+		user: username = '',
+		name: roomname = '',
+		bot = false
+	}) => {
 
 		if (!/^[a-z0-9_-]{1,16}$/i.test(username) || username === undefined)
 		{
@@ -82,7 +86,7 @@ io.on("connection", (socket) => {
 			sendRoomList(io);
 		}
 
-		room.addPlayer(username, client);
+		room.addPlayer(username, bot, client);
 
 		sendRoomList(io);
 
@@ -112,7 +116,7 @@ io.on("connection", (socket) => {
 			rooms.set(roomname, new Game(io, roomname, room.gameMode));
 			room = rooms.get(roomname);
 
-			room.addPlayer(username, client, () => {});
+			room.addPlayer(username, bot, client);
 		});
 
 		client.on(`gameMode:${roomname}`, (gameMode) => {
