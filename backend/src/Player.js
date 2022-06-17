@@ -1,9 +1,4 @@
-export function emptyBoard() {
-	let board = new Array(20)
-		.fill()
-		.map(() => new Array(10).fill(0));
-	return (board);
-}
+import { emptyBoard } from "./emptyBoard.js";
 
 export function makeShadow(currentShape, layer) {
 	let copy = currentShape.clone();
@@ -39,14 +34,16 @@ export class Player {
 
 		this.client.emit(`gameInfo:${this.room.name}`, {
 			clientId: this.client.id,
-			board: this.board,
-			scores: {
-				score: this.score,
-				lines: this.lines
-			},
-			nextShape,
 			currShape: this.currShape,
-			indestructibleLines: this.addedLinesNextTurn
+			...(this.isbot ? {} : {
+				board: this.board,
+				scores: {
+					score: this.score,
+					lines: this.lines
+				},
+				nextShape,
+				indestructibleLines: this.addedLinesNextTurn
+			})
 		});
 	}
 

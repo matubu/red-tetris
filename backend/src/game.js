@@ -73,11 +73,9 @@ export class Game {
 	makeIndestructibleLines(nbLines, senderPlayer) {
 		if (nbLines <= 0)
 			return ;
-		for (let [_, player] of this.players) {
-			if (senderPlayer.client.id !== player.client.id) {
+		for (let [_, player] of this.players)
+			if (senderPlayer.client.id !== player.client.id)
 				player.addIndestructibleLine(nbLines);
-			}
-		}
 	}
 
 	checkEndGame(isSolo) {
