@@ -81,3 +81,44 @@ test("Piece.intersect", () => {
 		])
 	).toBe(true)
 })
+
+test("Piece.rotateLeft", () => {
+	createTetriminos([
+		[0, 1, 1],
+		[1, 1, 0],
+		[0, 0, 0]
+	]).rotateLeft([
+		[0, 0],
+		[0, 0]
+	])
+
+	createTetriminos([
+		[0, 1, 1],
+		[1, 1, 0],
+		[0, 0, 0]
+	]).rotateLeft([
+		[0, 0, 0],
+		[0, 0, 0],
+		[0, 1, 0]
+	])
+
+	createTetriminos([
+		[0, 1, 0, 0],
+		[0, 1, 0, 0],
+		[0, 1, 0, 0],
+		[0, 1, 0, 0]
+	]).rotateLeft([
+		[1, 1, 1, 1],
+		[1, 0, 1, 1],
+		[1, 1, 1, 1]
+	])
+})
+
+test('Piece.drawOn', () => {
+	createTetriminos([
+		[0, 1, 0, 0],
+		[0, 1, 0, 0],
+		[0, 1, 0, 0],
+		[0, 1, 0, 0]
+	]).drawOn([])
+})

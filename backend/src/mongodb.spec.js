@@ -1,4 +1,4 @@
-import { client, db, scoresDB } from './mongodb'
+import { client } from './mongodb'
 
 test("db connect", () => {
 	client.close();
