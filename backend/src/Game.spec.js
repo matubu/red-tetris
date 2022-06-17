@@ -83,6 +83,15 @@ test('removePlayer', () => {
 	let client2 = new Client(fakeio());
 	game.addPlayer(username + '2', false, client2);
 
+	game.owner.layer[0][0] = 1;
+	for (let x = 0; x < 10; ++x)
+		game.owner.layer[19][x] = 1;
+	game.owner.sendLayerData(client1);
+	game.owner.sound('wow');
+	game.owner.addLinesToBoard(10);
+	game.owner.newTetriminos();
+	game.owner.newTetriminos();
+
 	game.removePlayer([...game.players.values()][1].client);
 	game.removePlayer(game.owner.client);
 })

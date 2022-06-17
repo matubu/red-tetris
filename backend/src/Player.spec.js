@@ -1,4 +1,4 @@
-import { makeShadow } from './Player.js';
+import { makeShadow, Player } from './Player.js';
 import { TETRIMINOS } from './Piece.js';
 import { emptyBoard } from "./emptyBoard.js";
 
