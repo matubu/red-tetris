@@ -192,7 +192,10 @@
 		position: fixed;
 		top: 2%;
 		left: 75%;
-		width: 10rem;
+		background: none;
+		border: none;
+		outline: none;
+		cursor: pointer;
 	}
 	.card-endgame {
 		box-shadow: 0 0 50px -15px var(--grey-back-0);
@@ -279,7 +282,9 @@
 />
 
 <main>
-	<button class="red-button mute-button" on:click={() => muted.set(!$muted)}>{$muted ? 'UNMUTE SOUND' : 'MUTE SOUND'}</button>
+	<button class="mute-button" on:click={() => muted.set(!$muted)}>
+		<img alt="sound" src={`${$muted ? '/sound-down.svg' : '/sound-up.svg'}`}/>
+	</button>
 	<aside class="others">
 		{#each [...usersBoard.entries()] as [_, { username, heights, scores, gameover }]}
 			<div>
