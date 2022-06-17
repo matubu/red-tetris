@@ -1,8 +1,9 @@
 <script>
-	import { user, socket } from "$lib/user";
+	import { user, socket, muted } from "$lib/user";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import Listener from '$lib/Listener.svelte';
+	import { browser } from '$app/env';
 
 	let roomname = ''
 	let usersBoard = new Map();
@@ -187,6 +188,12 @@
 			opacity: 1;
 		}
 	}
+	.mute-button {
+		position: fixed;
+		top: 2%;
+		left: 75%;
+		width: 10rem;
+	}
 	.card-endgame {
 		box-shadow: 0 0 50px -15px var(--grey-back-0);
 		position: fixed; /* Stay in place */
@@ -265,10 +272,14 @@
 
 <Listener
 	on="sound:{roomname}"
-	handler={(track) => new Audio(`/sound/${track}.wav`).play()}
+	handler={(track) => {
+		if (browser && !$muted)
+			new window.Audio(`/sound/${track}.wav`).play()
+	}}
 />
 
 <main>
+	<button class="red-button mute-button" on:click={() => muted.set(!$muted)}>{$muted ? 'UNMUTE SOUND' : 'MUTE SOUND'}</button>
 	<aside class="others">
 		{#each [...usersBoard.entries()] as [_, { username, heights, scores, gameover }]}
 			<div>

@@ -8,7 +8,7 @@ test('Tetriminos.constructPiece', () => {
 test("Piece.clone", () => {
 	let piece = TETRIMINOS[0].constructPiece();
 	expect(piece).not.toBe(piece.clone());
-})
+});
 
 function createTetriminos(shape, x=0, y=0)
 {

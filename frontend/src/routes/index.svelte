@@ -4,12 +4,12 @@
 	import Input from "$lib/Input.svelte";
 	import { onMount } from "svelte";
 
-	let userinput
+	let userinput;
 
 	onMount(() => {
-		userinput.focus()
-		userinput.setValue($user)
-		userinput.setError(history.state.userNameError)
+		userinput.focus();
+		userinput.setValue($user);
+		userinput.setError(history.state.userNameError);
 	})
 </script>
 

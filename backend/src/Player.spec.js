@@ -1,20 +1,17 @@
-import { emptyBoard, Player } from './Player.js'
-import { io as ClientSocket } from "socket.io-client";
-import { Client } from "./Client.js";
-import { Game } from "./Game.js";
+import { emptyBoard, makeShadow } from './Player.js'
+import { TETRIMINOS } from './Piece.js'
 
+
+test("newPiece + clone", () => {
+	let newPiece = TETRIMINOS[0].constructPiece();
+	expect(newPiece).not.toBe(newPiece.clone());
+});
 
 test("emptyBoard", async () => {
-	// const socket = await ClientSocket(`http://localhost:4000`);
+	let newPiece = TETRIMINOS[0].constructPiece();
+	let board = emptyBoard();
 
-	// const room = new Game(io, 'roomname', 'earth');
-
-	// let player = new Player(io, 'username', new Client(socket), room);
-
-	// player.gameover = true;
-
-	// expect(player.tick()).toBe(false);
-	makeShadow(currentShape, layer)
+	expect(makeShadow(newPiece, board)).not.toBe(newPiece);
 	expect(emptyBoard().length).toBe(20);
 	expect(emptyBoard()[0].length).toBe(10);
 	expect(emptyBoard()[0][0]).toBe(0);
