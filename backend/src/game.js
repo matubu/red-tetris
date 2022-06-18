@@ -33,6 +33,8 @@ export class Game {
 		let newPlayer = new Player(this.io, username, bot, client, this);
 
 		client.join(this.name);
+		if (!bot)
+			client.join(`${this.name}+human`);
 
 		if (this.players.size == 0 || this.owner?.client.id === client.id)
 			this.setOwner(newPlayer);

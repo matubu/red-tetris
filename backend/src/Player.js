@@ -35,19 +35,19 @@ export class Player {
 		this.client.emit(`gameInfo:${this.room.name}`, {
 			clientId: this.client.id,
 			currShape: this.currShape,
+			nextShape,
+			board: this.board,
 			...(this.isbot ? {} : {
-				board: this.board,
 				scores: {
 					score: this.score,
 					lines: this.lines
 				},
-				nextShape,
 				indestructibleLines: this.addedLinesNextTurn
 			})
 		});
 	}
 
-	sendLayerData(client) {
+	sendLayerData() {
 		let heights = new Array(10).fill().map((_, x) => {
 			for (let y in this.layer)
 				if (this.layer[y][x] && this.layer[y][x] != 8)
@@ -55,7 +55,7 @@ export class Player {
 			return (20);
 		})
 
-		client.emit(
+		this.client.in(`${this.room.name}+human`).emit(
 			`gameInfo:${this.room.name}`, {
 				clientId: this.client.id,
 				heights,
@@ -73,12 +73,12 @@ export class Player {
 	}
 
 	addLinesToBoard(nbLines) {
-		let copyBoard = this.layer;
-		for (let i = 0 ; i < nbLines ; i++) {
-			copyBoard.shift();
-			copyBoard.push(new Array(10).fill(9));
-		}
-		this.layer = copyBoard;
+		// let copyBoard = this.layer;
+		// for (let i = 0 ; i < nbLines ; i++) {
+		// 	copyBoard.shift();
+		// 	copyBoard.push(new Array(10).fill(9));
+		// }
+		// this.layer = copyBoard;
 	}
 
 	addIndestructibleLine(nbLines) {
@@ -103,7 +103,7 @@ export class Player {
 			++this.lines;
 		}
 		this.layer = filteredLayer;
-		this.sendLayerData(this.client.in(this.room.name));
+		this.sendLayerData();
 	}
 
 	newTetriminos() {
