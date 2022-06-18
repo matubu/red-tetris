@@ -1,5 +1,8 @@
 import { io } from "socket.io-client";
 
+// TODO take in account next piece
+// TODO learn
+
 function intersect([ox, oy], shape, board) {
 	for (let y in shape)
 	{
@@ -47,32 +50,7 @@ function getHeight(board) {
 	for (let y = 0; y < 20; ++y)
 		for (let x = 0; x < 10; ++x)
 			if (board[y][x])
-				return (-y);
-}
-
-function calculateCost(board) {
-	let cost = 0;
-	let blockedLines = new Array(20).fill(0);
-
-	for (let x = 0; x < 10; ++x)
-	{
-		let start = false;
-		for (let y = 0; y < 20; ++y)
-		{
-			if (board[y][x])
-				start = true;
-			else if (start)
-			{
-				++cost;
-				blockedLines[y] = 1;
-			}
-		}
-	}
-	return (
-		cost / 2
-		+ blockedLines.reduce((a, b) => a + b, 0) * 5
-		+ getHeight(board) * 2
-	);
+				return (20 - y);
 }
 
 function removeFullLines(board) {
@@ -84,6 +62,23 @@ function removeFullLines(board) {
 		filtered.unshift(new Array(10).fill(0));
 
 	return ([filtered, n]);
+}
+
+export class Genes {
+	constructor(features = {}) {
+		this.features = features;
+	}
+	mutate() {
+		let mutated = new Genes();
+		for (let key of Object.keys(this.features))
+			mutated.features[key] = 
+				this.features[key]
+					+ (Math.random() - .5) * 8;
+		return (mutated);
+	}
+	get(feature) {
+		return (this.features[feature] ??= (Math.random() - .5) * 100);
+	}
 }
 
 class Room {
@@ -105,6 +100,31 @@ class Room {
 	do(key) {
 		this.bot.socket.emit(`event:${this.roomname}`, key)
 	}
+	calculateScore(board, points) {
+		let cost = 0;
+		let blockedLines = new Array(20).fill(0);
+	
+		for (let x = 0; x < 10; ++x)
+		{
+			let start = false;
+			for (let y = 0; y < 20; ++y)
+			{
+				if (board[y][x])
+					start = true;
+				else if (start)
+				{
+					++cost;
+					blockedLines[y] = 1;
+				}
+			}
+		}
+		return (
+			([0, 100, 300, 500, 800][points] * this.bot.genes.get('score'))
+			+ (cost * this.bot.genes.get('cost'))
+			+ (blockedLines.reduce((a, b) => a + b, 0) * this.bot.genes.get('line_cost'))
+			+ (getHeight(board) * this.bot.genes.get('height'))
+		);
+	}
 	/** @param currShape currShape with rotation applied */
 	/** @param x the x position of the piece */
 	test(currShape, x) {
@@ -125,16 +145,15 @@ class Room {
 			draw([x, y], currShape, this.board)
 		);
 		// console.log('y', y, newBoard)
-		let cost = calculateCost(newBoard);
+		let score = this.calculateScore(newBoard, points);
 
 		return {
-			cost, // number of blocked empty block
-			points, // number of points won
+			score,
 			board: newBoard // board state
 		}
 	}
 	join() {
-		console.log(this.bot.botname, 'join', this.roomname);
+		// console.log(this.bot.botname, 'join', this.roomname);
 
 		this.bot.socket.emit('joinRoom', {
 			user: this.bot.botname,
@@ -142,32 +161,18 @@ class Room {
 			bot: true
 		})
 
-		this.on(`start:${this.roomname}`, () => {
-			console.log(this.bot.botname, 'started to play in', this.roomname);
-		})
-
-		// let cidx = undefined;
+		// this.on(`start:${this.roomname}`, () => {
+		// 	console.log(this.bot.botname, 'started to play in', this.roomname);
+		// })
 
 		this.on(`gameInfo:${this.roomname}`, (data) => {
 			if (data.clientId !== this.bot.socket.id)
 				return ;
 
-			if (data.gameover)
-			{
-				this.leave();
+			if (data.gameover || data.currShape === undefined)
 				return ;
-			}
 
-			// let newCidx = `${data.currShape.colorid}${data.nextShape.colorid}`
-			// if (cidx === newCidx)
-			// 	return ;
-			// cidx = newCidx;
-
-			// console.log('cidx', newCidx);
-			// console.log('curr shape', data.currShape);
-
-			let bestCost = Infinity;
-			let bestPoints = 0;
+			let bestScore = -Infinity;
 			let best = {
 				x: 0,
 				rot: 0,
@@ -180,20 +185,16 @@ class Room {
 			{
 				for (let x = 0; x < 10; ++x)
 				{
-					let { cost, points, board } = this.test(currShape, x);
+					let { score, board } = this.test(currShape, x);
 
-					if (
-						cost < bestCost ||
-						(cost == bestCost && points > bestPoints)
-					)
+					if (score > bestScore)
 					{
 						best = {
 							x: x - data.currShape.x,
 							rot: rot - data.currShape.rotation,
 							board
 						};
-						bestCost = cost;
-						bestPoints = points;
+						bestScore = score;
 					}
 				}
 
@@ -224,13 +225,13 @@ class Room {
 			while (best.rot--)
 				cmds.push('ArrowUp');
 
-			cmds.push(' ');
+			// cmds.push(' ');
 
 			this.do(cmds);
 		})
 	}
 	leave() {
-		console.log(this.bot.botname, 'leave', this.roomname);
+		// console.log(this.bot.botname, 'leave', this.roomname);
 
 		this.bot.socket.emit('leaveRoom');
 		for (let [event, listener] of this.listeners)
@@ -240,13 +241,13 @@ class Room {
 		this.onleave();
 
 
-		console.log();
+		// console.log();
 		// console.log();
 		// for (let row of data.currShape.shape)
 		// 	console.log(row.map(cell => cell ? '██' : '  ').join(''));
 		// console.log('---');
-		for (let row of this.board)
-			console.log(row.map(cell => cell ? '██' : '  ').join(''));
+		// for (let row of this.board)
+		// 	console.log(row.map(cell => cell ? '██' : '  ').join(''));
 	}
 }
 
@@ -256,43 +257,65 @@ export class Bot {
 		this.socket = io(`http://localhost:4000`);
 
 		this.botname = botname;
+		this.genes = new Genes();
 
 		this.room = undefined;
 
-		this.socket.on("connect", () => console.log(botname, 'connected'))
 		this.socket.on("connect_error", () => console.log(botname, 'cannot connect'));
 		this.socket.on("disconnect", () => console.log(botname, 'disconnected'));
+	}
 
-		this.start_bot();
+	setGenes(genes) {
+		this.genes = genes;
 	}
 
 	start_bot() {
+		return new Promise((resolve) => {
+			this.socket.on('roomList', (rooms) => {
 	
-		this.socket.on('roomList', (rooms) => {
+				if (this.room)
+					return ;
+	
+				let roomname = rooms[0]?.name;
+	
+				if (roomname === undefined)
+					return ;
+	
+				this.room = new Room(this, roomname)
+				this.room.join();
 
-			if (this.room)
-				return ;
+				this.room.onleave = () => {
+					setTimeout(() => {
+						this.room = undefined;
+						this.socket.emit('getRoomList');
+					}, 500)
+				};
 
-			let roomname = rooms.sort(() => Math.random() - 0.5)[0]?.name;
-
-			if (roomname === undefined)
-				return ;
-
-			this.room = new Room(this, roomname)
-			this.room.join();
-
-			this.room.onleave = () => {
-				setTimeout(() => {
-					this.room = undefined;
-					this.socket.emit('getRoomList');
-				}, 500)
-			};
-
-			this.room.on(`restart:${roomname}`, () => this.room.leave());
-			this.room.on(`owner:${roomname}`, () => this.room.leave())
-
+				this.room.on(`endgame:${roomname}`, (data) => {
+					// console.log('endgame', data);
+					this.room.leave();
+					this.socket.removeAllListeners('roomList');
+					for (let i in data)
+					{
+						if (data[i].username === this.botname)
+						{
+							console.log('resolve', this.botname, i);
+							resolve({
+								i: +i,
+								score: data[i].score,
+								height: getHeight(this.room.board),
+								genes: this.genes
+							});
+						}
+					}
+				})
+	
+				this.room.on(`restart:${roomname}`, () => this.room.leave());
+				this.room.on(`owner:${roomname}`, () => this.room.leave())
+	
+			})
+		
+			this.socket.emit('getRoomList');
 		})
-	
-		this.socket.emit('getRoomList');
 	}
 }

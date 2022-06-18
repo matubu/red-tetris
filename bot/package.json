@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"start": "node main.js"
+		"learn": "node learn.js"
 	},
 	"dependencies": {
 		"socket.io-client": "^4.5.1"
