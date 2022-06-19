@@ -29,7 +29,7 @@ export class Player {
 		this.addedLinesNextTurn = 0;
 	}
 
-	sendGameData() {
+	sendGameData(iskeyChange=false) {
 		let nextShape = this.sequence.get(this.currShapeIdx);
 
 		this.client.emit(`gameInfo:${this.room.name}`, {
@@ -42,8 +42,9 @@ export class Player {
 					lines: this.lines
 				},
 				nextShape,
-				indestructibleLines: this.addedLinesNextTurn
-			})
+				indestructibleLines: this.addedLinesNextTurn,
+			}),
+			iskeyChange
 		});
 	}
 
@@ -128,7 +129,7 @@ export class Player {
 		}
 	}
 
-	draw(send = true) {
+	draw(send = true, isKeyChange=false) {
 		this.board = this.layer.map(row => [...row]);
 
 		if (this.currShape)
@@ -136,9 +137,8 @@ export class Player {
 			this.board = makeShadow(this.currShape, this.layer).drawOn(this.board);
 			this.board = this.currShape.drawOn(this.board);
 		}
-
 		if (send)
-			this.sendGameData();
+			this.sendGameData(isKeyChange);
 	}
 
 	tick() {
@@ -198,6 +198,6 @@ export class Player {
 		else
 			applyKey(keys);
 
-		this.draw(!this.isbot || newTetriminos);
+		this.draw(!this.isbot || newTetriminos, true);
 	}
 }
