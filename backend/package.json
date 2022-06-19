@@ -1,7 +1,8 @@
 {
   "type": "module",
   "scripts": {
-    "start": "export $(cat .env) && nodemon src/app.js",
+    "start": "export $(cat .env) && node src/app.js",
+    "dev": "export $(cat .env) && nodemon src/app.js",
     "test": "export $(cat .env) && node --experimental-vm-modules ./node_modules/.bin/jest",
 	"coverage": "export $(cat .env) && node --experimental-vm-modules ./node_modules/.bin/jest --coverage"
 },
