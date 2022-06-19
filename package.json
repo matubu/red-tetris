@@ -1,5 +1,6 @@
 {
 	"scripts": {
-		"start": "sh launch.sh"
+		"heroku-prebuild": "sh install.sh",
+		"start": "sh start.sh"
 	}
 }
