@@ -8,7 +8,6 @@
 		"preview": "svelte-kit preview",
 		"start": "npm run build && npm run bundle && sirv build --host --port 80",
 		"package": "svelte-kit package",
-		"prepare": "svelte-kit sync",
 		"test:install": "npx playwright install",
 		"test": "rm -rf report && playwright test",
 		"test-headed": "npm test -- --headed"
