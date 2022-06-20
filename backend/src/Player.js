@@ -136,7 +136,6 @@ export class Player {
 			this.board = makeShadow(this.currShape, this.layer).drawOn(this.board);
 			this.board = this.currShape.drawOn(this.board);
 		}
-
 		if (send)
 			this.sendGameData();
 	}

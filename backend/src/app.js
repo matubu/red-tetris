@@ -12,6 +12,14 @@ export const io = new Server({
 
 let rooms = new Map();
 
+// ----- Delete the lowest 100 scores ----- //
+// let toDelete = await scoresDB.find({}, {_id : 1})
+//     .limit(100)
+//     .sort({score:1})
+//     .toArray();  // Pull out just the _ids
+// toDelete = toDelete.map((doc) => { return doc._id; });
+// scoresDB.deleteMany({_id: {$in: toDelete}})
+
 function sendRoomList(socket) {
 	let roomList = [];
 
