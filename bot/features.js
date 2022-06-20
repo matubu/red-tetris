@@ -73,7 +73,7 @@ export function feature_holes(board, genes) {
 	blocked_lines = blockedLines.reduce((a, b) => a + b, 0);
 
 	return (
-		genes.get('holes', holes, -10)
+		genes.get('holes', holes, -1)
 		+ genes.get('blocked_lines', blocked_lines, -10)
 		+ genes.get('blocks_hover_lines', blocks_hover_lines, -10)
 	);
@@ -85,15 +85,15 @@ export function feature_holes(board, genes) {
 export function feature_points(clearedLines, genes) {
 
 	let lines_cleared = clearedLines;
-	// let not_tetris = clearedLines <= 3;
+	let not_tetris = clearedLines <= 3;
 	let lines_to_others = Math.max(clearedLines - 1, 0);
 	let tetris = clearedLines === 4;
 
 	return (
 		genes.get('lines_cleared', lines_cleared, 1)
-		// + genes.get('not_tetris', not_tetris, -.5)
+		+ genes.get('not_tetris', not_tetris, -2)
 		+ genes.get('lines_to_others', lines_to_others, 2)
-		+ genes.get('tetris', tetris, 10)
+		+ genes.get('tetris', tetris, 20)
 	)
 
 }

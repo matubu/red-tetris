@@ -20,52 +20,43 @@ export class Bot {
 		this.genes = genes;
 	}
 
-	start_bot() {
+	start_bot(roomname, bot_count, iter) {
 		return new Promise((resolve) => {
-			this.socket.on('roomList', (rooms) => {
-	
-				if (this.room)
-					return ;
-	
-				let roomname = rooms[0]?.name;
-	
-				if (roomname === undefined)
-					return ;
-	
-				this.room = new Room(this, roomname)
-				this.room.join();
+			this.room = new Room(this, roomname)
 
-				this.room.onleave = () => {
-					setTimeout(() => {
-						this.room = undefined;
-						this.socket.emit('getRoomList');
-					}, 500)
-				};
-
-				this.room.on(`endgame:${roomname}`, (data) => {
-					this.room.leave();
-					this.socket.removeAllListeners('roomList');
-					for (let i in data)
+			this.room.on(`endgame:${roomname}`, (data) => {
+				let tetrisCount = this.room.tetrisCount;
+				this.room.leave();
+				this.room = undefined;
+				for (let i in data)
+				{
+					if (data[i].username === this.botname)
 					{
-						if (data[i].username === this.botname)
-						{
-							console.log('resolve', this.botname, i);
-							resolve({
-								i: +i,
-								score: data[i].score,
-								// height: getHeight(this.room.board),
-								genes: this.genes
-							});
-						}
+						resolve({
+							i: +i,
+							score: data[i].score,
+							tetrisCount,
+							// height
+							genes: this.genes,
+							botname: this.botname
+						});
+					}
+				}
+			})
+
+			this.room.on(`owner:${roomname}`, () => {
+				console.log('set owner to', this.botname);
+				this.room.on(`join:${roomname}`, (users) => {
+					if (users.length >= bot_count)
+					{
+						console.log('launching iteration', iter, '...');
+						this.socket.emit(`start:${roomname}`);
 					}
 				})
-	
-				this.room.on(`restart:${roomname}`, () => this.room.leave());
-				this.room.on(`owner:${roomname}`, () => this.room.leave())
-	
 			})
-		
-			this.socket.emit('getRoomList');
+
+			this.room.join();
+
 		})
 	}
 }

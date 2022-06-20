@@ -57,11 +57,13 @@ export class Game {
 		if (this?.owner?.client?.id === client.id)
 			this.setOwner([...this.players.values()][0]);
 
-		if (this.started && currPlayer?.score > 0)
+		if (this.started && currPlayer?.score > 0 && !currPlayer?.isbot)
+		{
 			scoresDB.insertOne({
 				username: currPlayer.username,
 				score: currPlayer.score
 			})
+		}
 
 		this.sendUsersList();
 
@@ -143,7 +145,7 @@ export class Game {
 			if (this.tick_per_secs > 0)
 			{
 				this.timeout = setTimeout(loop, 1000 / this.tick_per_secs);
-				this.tick_per_secs += 0.002;
+				// this.tick_per_secs += 0.002;
 			}
 
 		}

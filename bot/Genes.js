@@ -3,27 +3,25 @@ export class Genes {
 		this.features = features;
 	}
 
-	mutate(lr = .1) {
-		let mutated = new Genes();
+	mutate(lr = 10) {
+		let mutated = new Genes({ ...this.features });
 		for (let key of Object.keys(this.features))
-			mutated.features[key] =
-				this.features[key]
-					+ (Math.random() - .5) * lr;
+			if (Math.random() < .1)
+				mutated.features[key] += (Math.random() - .5) * lr * 2;
 		return (mutated);
 	}
 
 	breath(genes_pool) {
 		let breathed = new Genes();
+		let mate = genes_pool[Math.floor(Math.random() * genes_pool.length)];
 		for (let key of Object.keys(this.features))
 		{
-			let fac = Math.random();
-			let mate = genes_pool[Math.floor(Math.random() * genes_pool.length)];
-
-			breathed.features[key] =
-				this.features[key] * fac
-				+ mate.genes.features[key] * (1-fac)
+			if (Math.random() < .4)
+				breathed.features[key] = mate.genes.features[key];
+			else
+				breathed.features[key] = this.features[key];
 		}
-		return (breathed)
+		return (breathed);
 	}
 
 	/** @param {string} feature */

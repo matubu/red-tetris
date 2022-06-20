@@ -1,7 +1,7 @@
 {
 	"scripts": {
 		"learn": "node learn.js",
-		"start": "node main.js",
+		"duel": "node duel.js",
 		"edracoon-bot": "nodemon edracoon_bot.js"
 	},
 	"dependencies": {

@@ -25,6 +25,7 @@ export class Room {
 		this.bot = bot;
 		this.roomname = roomname;
 		this.listeners = [];
+		this.tetrisCount = 0;
 	}
 
 	on(event, listener) {
@@ -62,7 +63,8 @@ export class Room {
 		return ({
 			board: newBoard,
 			score: this.calculateScore(newBoard) + points,
-			points
+			points,
+			tetris: clearedLines >= 4
 		});
 	}
 	join() {
@@ -92,6 +94,7 @@ export class Room {
 			let best = {
 				x: 0,
 				rot: 0,
+				tetris: false
 				// board: clean_board
 			};
 
@@ -103,7 +106,7 @@ export class Room {
 				{
 					for (let x_curr = 0; x_curr < 10; ++x_curr)
 					{
-						let { board, points } = this.get_score(clean_board, currShape, x_curr);
+						let { board, points, tetris } = this.get_score(clean_board, currShape, x_curr);
 
 						if (!board)
 							continue ;
@@ -130,10 +133,13 @@ export class Room {
 			}
 
 			// console.log();
-			// console.log(this.bot.botname);
-			// console.log(best.board.map(row => row.join('')).join('\n'));
+			// console.log('tick', this.bot.botname);
+			// console.log(clean_board.map(row => row.join('')).join('\n'));
 			// console.log('-'.repeat(10));
 			// this.expected = best.board;
+
+			if (best.tetris === true)
+				++this.tetrisCount;
 
 			let cmds = []
 
@@ -157,7 +163,5 @@ export class Room {
 		for (let [event, listener] of this.listeners)
 			this.bot.socket.removeListener(event, listener);
 		this.listeners = [];
-
-		this.onleave();
 	}
 }
