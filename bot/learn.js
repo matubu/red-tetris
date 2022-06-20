@@ -30,9 +30,10 @@ while (1)
 	for (let i = 0; i < 2; ++i)
 	{
 		let refinement = (await Promise.all(bots.map(bot => bot.start_bot(`botroom-${iter}-${i}`, COUNT, iter))));
-		for (let i of refinement)
+		for (let i in refinement)
 		{
 			results[i].score += refinement[i].score;
+			results[i].i += refinement[i].i;
 			results[i].tetrisCount += refinement[i].tetrisCount;
 		}
 	}
