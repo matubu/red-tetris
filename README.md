@@ -1,2 +1,2 @@
 # red-tetris
-Multiplayer Tetris Website
+🎮 a web tetris game using websockets
