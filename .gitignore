@@ -2,3 +2,5 @@ node_modules
 backend/coverage
 .env
 .env.*
+package-lock.json
+package.json
