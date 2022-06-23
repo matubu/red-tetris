@@ -1,21 +1,23 @@
 {
-  "type": "module",
-  "scripts": {
-    "start": "export $(cat .env) && node src/app.js",
-    "dev": "export $(cat .env) && nodemon src/app.js",
-    "test": "export $(cat .env) && node --experimental-vm-modules ./node_modules/.bin/jest",
-	"coverage": "export $(cat .env) && node --experimental-vm-modules ./node_modules/.bin/jest --coverage"
-},
-  "jest": {
-    "verbose": true,
-    "transform": {}
-  },
-  "dependencies": {
-    "mongodb": "^4.7.0",
-    "nodemon": "^2.0.16",
-    "socket.io": "^4.5.1"
-  },
-  "devDependencies": {
-    "jest": "^28.1.1"
-  }
+	"scripts": {
+		"start": "export `cat .env` && node src/app.js",
+		"build": "export `cat .env` && ./build.sh",
+		"dev": "export `cat .env` && nodemon src/app.js",
+		"test": "export `cat .env` && node --experimental-vm-modules ./node_modules/.bin/jest",
+		"coverage": "export `cat .env` && node --experimental-vm-modules ./node_modules/.bin/jest --coverage"
+	},
+	"jest": {
+		"verbose": true,
+		"transform": {}
+	},
+	"dependencies": {
+		"mongodb": "^4.7.0",
+		"nodemon": "^2.0.16",
+		"socket.io": "^4.5.1"
+	},
+	"devDependencies": {
+		"esbuild": "^0.14.47",
+		"jest": "^28.1.1"
+	},
+	"type": "module"
 }
