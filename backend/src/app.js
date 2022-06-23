@@ -1,16 +1,31 @@
 import { Server } from "socket.io";
 import { Game } from './Game.js';
 import { connectMongo, scoresDB } from './mongodb.js';
-import { Client } from './Client.js'
+import { Client } from './Client.js';
+import http from 'http';
+import https from 'https';
+import fs from 'fs';
 
-export const io = new Server({
+let rooms = new Map();
+
+const server = process.env.HTTPS
+	? https.createServer({
+		key: fs.readFileSync(process.env.HTTPS_PRIVKEY),
+		cert: fs.readFileSync(process.env.HTTPS_CERT)
+	})
+	: http.createServer();
+
+const PORT = 4000;
+server.listen(PORT, () => console.log(`listening on port ${PORT}`));
+
+export const io = new Server(server, {
 	cors: {
 		origin: "*",
-		methods: ["GET", "POST"]
+		methods: ["GET"]
 	}
 });
 
-let rooms = new Map();
+connectMongo().then(start)
 
 // ----- Delete the lowest 100 scores ----- //
 // let toDelete = await scoresDB.find({}, {_id : 1})
@@ -144,7 +159,3 @@ function start() {
 	
 	});
 }
-
-connectMongo().then(start)
-
-io.listen(4000);
