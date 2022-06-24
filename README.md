@@ -1,5 +1,5 @@
 # red-tetris
-🎮 a web tetris game using websockets
+🎮 a web, networked, multiplayer, tetris game using websockets
 
 ![](./screenshots/login.png)
 ![](./screenshots/scores.png)
