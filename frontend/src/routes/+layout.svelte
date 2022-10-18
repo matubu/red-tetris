@@ -1,7 +1,7 @@
 <script>
 	import { user, connected } from '$lib/user.js'
 	import { goto, afterNavigate } from "$app/navigation";
-	import { browser } from "$app/env";
+	import { browser } from "$app/environment";
 	import '$lib/style.css'
 
 	if (browser)

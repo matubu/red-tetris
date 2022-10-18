@@ -3,7 +3,7 @@
 	import { onMount } from "svelte";
 	import { user, socket } from "$lib/user.js";
 	import Listener from "$lib/Listener.svelte";
-	import { browser } from "$app/env"
+	import { browser } from "$app/environment"
 
 	let roomname = '';
 	let users = [];

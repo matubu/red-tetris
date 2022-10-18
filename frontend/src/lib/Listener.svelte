@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from "svelte";
 	import { socket } from "$lib/user.js";
-	import { browser } from "$app/env";
+	import { browser } from "$app/environment";
 	import { writable } from "svelte/store";
 
 	/** @type string */
