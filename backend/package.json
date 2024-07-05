@@ -1,10 +1,10 @@
 {
 	"scripts": {
-		"start": "export `cat .env` && node src/app.js",
-		"build": "export `cat .env` && ./build.sh",
-		"dev": "export `cat .env` && nodemon src/app.js",
-		"test": "export `cat .env` && node --experimental-vm-modules ./node_modules/.bin/jest",
-		"coverage": "export `cat .env` && node --experimental-vm-modules ./node_modules/.bin/jest --coverage"
+		"start": "node src/app.js",
+		"build": "./build.sh",
+		"dev": "nodemon src/app.js",
+		"test": "node --experimental-vm-modules ./node_modules/.bin/jest",
+		"coverage": "node --experimental-vm-modules ./node_modules/.bin/jest --coverage"
 	},
 	"jest": {
 		"verbose": true,
@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"mongodb": "^4.17.0",
-		"nodemon": "^2.0.16",
+		"nodemon": "^3.1.4",
 		"socket.io": "^4.5.1"
 	},
 	"devDependencies": {

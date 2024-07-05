@@ -1,3 +1,5 @@
+console.log('starting tetris server');
+
 import { Server } from "socket.io";
 import { Game } from './Game.js';
 import { connectMongo, scoresDB } from './mongodb.js';
@@ -8,12 +10,7 @@ import fs from 'fs';
 
 let rooms = new Map();
 
-const server = process.env.HTTPS
-	? https.createServer({
-		key: fs.readFileSync(process.env.HTTPS_PRIVKEY),
-		cert: fs.readFileSync(process.env.HTTPS_CERT)
-	})
-	: http.createServer();
+const server = http.createServer();
 
 const PORT = 4000;
 server.listen(PORT, () => console.log(`listening on port ${PORT}`));
@@ -55,6 +52,8 @@ async function sendScores(socket, username) {
 }
 
 function start() {
+	console.log('started tetris server');
+	
 	io.on("connection", (socket) => {
 	
 		socket.on('getRoomList', () => sendRoomList(socket));

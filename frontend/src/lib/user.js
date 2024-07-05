@@ -24,7 +24,7 @@ if (browser)
 	writableLocalStorage(user, 'user');
 	writableLocalStorage(muted, 'muted');
 
-	socket = io(`${location.protocol}//${location.hostname}:4000`)
+	socket = io('/')
 	socket.on("connect", () => connected.set(true))
 	socket.on("connect_error", () => connected.set(false));
 	socket.on("disconnect", () => connected.set(false));

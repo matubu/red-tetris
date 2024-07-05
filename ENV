@@ -1,0 +1,3 @@
+NGINX_SERVER_NAME=tetris.mathias.ninja
+NGINX_HTTPS_ONLY=1
+NGINX_INCLUDE_FILE=nginx-proxy.nginx
