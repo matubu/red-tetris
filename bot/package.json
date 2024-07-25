@@ -6,7 +6,7 @@
 	},
 	"dependencies": {
 		"nodemon": "^2.0.16",
-		"socket.io-client": "^4.5.1"
+		"socket.io-client": "^4.7.5"
 	},
 	"type": "module"
 }
