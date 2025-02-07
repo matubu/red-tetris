@@ -37,4 +37,6 @@
 		/>
 		<button class="red-button">PLAY</button>
 	</form>
+
+	<p>Made by <a href="https://mathias.ninja">Matubu</a> and <a href="https://github.com/Edracoon">Edracoon</a></p>
 </main>
